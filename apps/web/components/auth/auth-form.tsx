@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import MyLogo from "@/components/icons/my-logo";
 import { Mail, Loader2, Eye, EyeOff, Lock } from "lucide-react";
 import { toast } from "sonner";
-import { AuthState, authAction } from "@/app/_actions/auth-action";
+import { AuthState, authAction } from "@/actions/auth-action";
 import { useActionState } from "react";
 import { PasswordInput } from "@/components/ui/password-input";
 import { signIn } from "@/lib/auth-client";

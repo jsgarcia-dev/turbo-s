@@ -75,6 +75,24 @@
   --sidebar-ring: oklch(0.439 0 0);
 }
 
+@theme {
+  --animate-shine: shine 1.5s ease infinite;
+  --anim-shift: -100%;
+  --anim-shift-hover: 100%;
+
+  @keyframes shine {
+    0% {
+      transform: translateX(var(--anim-shift, -100%));
+    }
+    50% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(var(--anim-shift, 100%));
+    }
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

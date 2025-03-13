@@ -5,7 +5,6 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Cloud, Database, FileText } from "lucide-react";
-import SupabaseIcon from "@/components/icons/supabase-icon";
 
 // Tipos para as integrações
 interface Integration {
@@ -23,13 +22,6 @@ export default function SettingsIntegrationsPage() {
 
   // Lista de integrações disponíveis
   const integrations: Integration[] = [
-    {
-      id: "supabase-storage",
-      name: "Supabase Storage",
-      description: "Armazenamento de arquivos na nuvem com Supabase",
-      icon: <SupabaseIcon className="h-8 w-8" />,
-      status: "active",
-    },
     {
       id: "s3",
       name: "Amazon S3",
