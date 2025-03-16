@@ -41,7 +41,7 @@ export function ProfileNameForm() {
       const result = await updateUserName(formData);
 
       if (result.success) {
-        await refetch();
+        refetch();
 
         toast.success(result.message, {
           className:
@@ -148,7 +148,7 @@ export function ProfileNameForm() {
               </div>
               {name && name.length < 3 && (
                 <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
-                  O nome deve ter pelo menos 3 caracteres
+                  O nome deve ter pelo menos 5 caracteres
                 </p>
               )}
             </div>

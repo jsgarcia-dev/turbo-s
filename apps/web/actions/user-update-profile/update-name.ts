@@ -21,7 +21,6 @@ export async function updateUserName(formData: FormData) {
       };
     }
 
-    // Obter a sessão do usuário atual
     const session = await auth.api.getSession({
       headers: await headers(),
     });
@@ -33,7 +32,6 @@ export async function updateUserName(formData: FormData) {
       };
     }
 
-    // Atualizar o nome do usuário usando a API do Better Auth
     await auth.api.updateUser({
       body: {
         name: result.data.name,
@@ -41,7 +39,6 @@ export async function updateUserName(formData: FormData) {
       headers: await headers(),
     });
 
-    // Revalidar caminhos relevantes
     revalidatePath("/settings/user-profile");
 
     return {
