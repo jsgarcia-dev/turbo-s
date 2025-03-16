@@ -64,9 +64,6 @@ export function SettingsSidebar({ session }: SettingsSidebarProps) {
 
   return (
     <div className="pb-2">
-      <h2 className="mb-2 px-2 text-lg font-semibold md:hidden">
-        Menu de Configurações
-      </h2>
       <nav
         className="max-h-[calc(100vh-6rem)] space-y-1 overflow-auto md:max-h-[calc(100vh-8rem)]"
         aria-label="Menu de configurações"
