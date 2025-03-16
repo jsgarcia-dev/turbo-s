@@ -82,7 +82,7 @@ export function ProfileImageForm() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <Card className="border-border/30 from-card/50 to-card dark:border-border/10 dark:to-card/95 flex w-full flex-col overflow-hidden border bg-gradient-to-br shadow-md transition-all hover:shadow-lg dark:bg-gradient-to-br dark:from-gray-950/80">
+        <Card className="border-border/30 from-card/50 to-card dark:border-border/10 dark:to-card/95 flex w-full flex-col overflow-hidden border bg-gradient-to-br p-0 shadow-md transition-all hover:shadow-lg dark:bg-gradient-to-br dark:from-gray-950/80">
           <CardHeader className="border-border/10 bg-muted/30 dark:bg-muted/5 gap-y-1 border-b p-0">
             <div className="px-6 py-4">
               <div className="flex items-center gap-2">
@@ -153,7 +153,7 @@ export function ProfileImageForm() {
           </CardContent>
 
           <CardFooter className="border-border/10 bg-muted/30 text-muted-foreground dark:bg-muted/5 mt-auto border-t p-0">
-            <div className="w-full px-6 py-3 text-xs">
+            <div className="flex h-12 w-full items-center px-6 text-xs">
               Formatos suportados: JPG, PNG, GIF (máx 5MB)
             </div>
           </CardFooter>

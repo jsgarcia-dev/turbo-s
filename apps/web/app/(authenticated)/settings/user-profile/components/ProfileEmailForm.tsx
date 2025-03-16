@@ -28,7 +28,7 @@ import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function ProfileEmailForm() {
-  const { data: session, isPending: isSessionLoading } = useSession();
+  const { data: session, isPending: isSessionLoading, refetch } = useSession();
   const [newEmail, setNewEmail] = useState("");
   const [isPending, startTransition] = useTransition();
   const [focused, setFocused] = useState(false);
@@ -44,6 +44,8 @@ export function ProfileEmailForm() {
       const result = await updateUserEmail(formData);
 
       if (result.success) {
+        refetch();
+
         toast.success(result.message, {
           icon: <SparklesIcon className="h-4 w-4 text-green-500" />,
           className:

@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Icons } from "@/components/icons";
-import { UserIcon } from "lucide-react";
+import { UserIcon, PencilIcon, CheckIcon, XIcon } from "lucide-react";
 import { motion } from "framer-motion";
 
 export function ProfileNameForm() {
@@ -24,10 +24,13 @@ export function ProfileNameForm() {
   const [name, setName] = useState(session?.user?.name || "");
   const [isPending, startTransition] = useTransition();
   const [focused, setFocused] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [originalName, setOriginalName] = useState("");
 
   useEffect(() => {
     if (session?.user?.name) {
       setName(session.user.name);
+      setOriginalName(session.user.name);
     }
   }, [session?.user?.name]);
 
@@ -41,7 +44,8 @@ export function ProfileNameForm() {
       const result = await updateUserName(formData);
 
       if (result.success) {
-        refetch();
+        await refetch();
+        setIsEditing(false);
 
         toast.success(result.message, {
           className:
@@ -64,6 +68,12 @@ export function ProfileNameForm() {
         });
       }
     });
+  };
+
+  const cancelEdit = () => {
+    setName(originalName);
+    setIsEditing(false);
+    setFocused(false);
   };
 
   if (isSessionLoading) {
@@ -107,26 +117,28 @@ export function ProfileNameForm() {
         </CardHeader>
 
         <CardContent className="flex-1 space-y-5 p-6">
-          <div className="bg-muted/30 border-border/30 space-y-1.5 rounded-md border p-4">
-            <div className="text-foreground/80 text-sm font-medium">
-              Seu nome atual
-            </div>
-            <div className="flex items-center gap-2">
-              <UserIcon className="text-foreground/60 h-4 w-4" />
-              <span className="text-foreground bg-primary/10 rounded-md px-2 py-1 font-medium">
-                {session?.user?.name || "Nome não definido"}
-              </span>
-            </div>
-          </div>
-
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label
-                htmlFor="name"
-                className={`text-sm font-medium transition-colors ${focused ? "text-primary" : "text-foreground/90"}`}
-              >
-                Novo nome
-              </Label>
+              <div className="flex items-center justify-between">
+                <Label
+                  htmlFor="name"
+                  className={`text-sm font-medium transition-colors ${focused ? "text-primary" : "text-foreground/90"}`}
+                >
+                  {isEditing ? "Editar nome" : "Nome"}
+                </Label>
+                {!isEditing && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsEditing(true)}
+                    className="text-muted-foreground hover:text-foreground h-8 px-2"
+                  >
+                    <PencilIcon className="mr-1 h-3.5 w-3.5" />
+                    <span className="text-xs">Editar</span>
+                  </Button>
+                )}
+              </div>
               <div className="relative">
                 <Input
                   id="name"
@@ -136,40 +148,67 @@ export function ProfileNameForm() {
                   onChange={(e) => setName(e.target.value)}
                   onFocus={() => setFocused(true)}
                   onBlur={() => setFocused(false)}
+                  disabled={!isEditing}
                   required
                   minLength={3}
-                  className="border-border/40 bg-background/50 pl-10 transition-all"
+                  className={`border-border/40 bg-background/50 pl-10 transition-all ${
+                    !isEditing
+                      ? "text-foreground/90 bg-muted/20"
+                      : "border-primary/50 shadow-sm"
+                  }`}
                 />
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <UserIcon
-                    className={`h-5 w-5 ${focused ? "text-primary" : "text-muted-foreground/60"} transition-colors`}
+                    className={`h-5 w-5 ${
+                      focused && isEditing
+                        ? "text-primary"
+                        : "text-muted-foreground/60"
+                    } transition-colors`}
                   />
                 </div>
               </div>
-              {name && name.length < 3 && (
+              {isEditing && name && name.length < 3 && (
                 <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
                   O nome deve ter pelo menos 5 caracteres
                 </p>
               )}
             </div>
 
-            <motion.div whileTap={{ scale: 0.98 }} className="mt-2">
-              <Button
-                type="submit"
-                disabled={isPending}
-                className="group relative overflow-hidden"
-              >
-                {isPending ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <Icons.spinner className="h-4 w-4 animate-spin" />
-                    <span>Atualizando...</span>
-                  </div>
-                ) : (
-                  <span>Atualizar nome</span>
-                )}
-                <span className="absolute inset-0 -z-10 animate-[shimmer_3s_infinite] bg-[linear-gradient(90deg,transparent_25%,rgba(59,130,246,0.2)_50%,transparent_95%)] bg-[length:200%_100%] dark:bg-[linear-gradient(90deg,transparent_25%,rgba(16,185,129,0.15)_50%,transparent_75%)]" />
-              </Button>
-            </motion.div>
+            {isEditing && (
+              <div className="flex gap-2">
+                <motion.div whileTap={{ scale: 0.98 }} className="flex-1">
+                  <Button
+                    type="submit"
+                    disabled={isPending || name.length < 3}
+                    className="group relative w-full overflow-hidden"
+                  >
+                    {isPending ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <Icons.spinner className="h-4 w-4 animate-spin" />
+                        <span>Atualizando...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center gap-1">
+                        <CheckIcon className="h-4 w-4" />
+                        <span>Salvar</span>
+                      </div>
+                    )}
+                    <span className="absolute inset-0 -z-10 animate-[shimmer_3s_infinite] bg-[linear-gradient(90deg,transparent_25%,rgba(59,130,246,0.2)_50%,transparent_95%)] bg-[length:200%_100%] dark:bg-[linear-gradient(90deg,transparent_25%,rgba(16,185,129,0.15)_50%,transparent_75%)]" />
+                  </Button>
+                </motion.div>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={cancelEdit}
+                  disabled={isPending}
+                  className="border-border/50"
+                >
+                  <XIcon className="mr-1 h-4 w-4" />
+                  <span>Cancelar</span>
+                </Button>
+              </div>
+            )}
           </form>
         </CardContent>
 

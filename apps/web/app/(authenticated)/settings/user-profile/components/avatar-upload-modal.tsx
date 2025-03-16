@@ -109,15 +109,17 @@ export default function AvatarUploadModal({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Alterar foto de perfil</DialogTitle>
-          <DialogDescription>
+      <DialogContent className="flex flex-col sm:max-w-md">
+        <DialogHeader className="border-border/10 bg-muted/5 border-b pb-4">
+          <DialogTitle className="text-xl font-semibold tracking-tight">
+            Alterar foto de perfil
+          </DialogTitle>
+          <DialogDescription className="text-muted-foreground/80 mt-1">
             Escolha uma nova foto para o seu perfil
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col items-center justify-center gap-6 py-4">
+        <div className="flex flex-1 flex-col items-center justify-center gap-6 py-6">
           {error && (
             <p className="text-destructive text-center text-sm">{error}</p>
           )}
@@ -182,30 +184,30 @@ export default function AvatarUploadModal({
               Formatos suportados: JPG, PNG, GIF (máx 5MB)
             </p>
           </div>
+        </div>
 
-          <div className="flex w-full justify-between gap-2">
-            <Button type="button" variant="outline" onClick={handleClose}>
-              Cancelar
-            </Button>
-            <Button
-              type="button"
-              onClick={handleUpload}
-              disabled={!selectedFile || isUploading}
-              className="relative overflow-hidden"
-            >
-              {isUploading ? (
-                <>
-                  <span className="flex items-center gap-2">
-                    <span className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent"></span>
-                    Enviando...
-                  </span>
-                </>
-              ) : (
-                "Salvar"
-              )}
-              <span className="absolute inset-0 -z-10 animate-[shimmer_3s_infinite] bg-[linear-gradient(90deg,transparent_25%,rgba(59,130,246,0.3)_50%,transparent_95%)] bg-[length:200%_100%] dark:bg-[linear-gradient(90deg,transparent_25%,rgba(16,185,129,0.15)_50%,transparent_75%)]" />
-            </Button>
-          </div>
+        <div className="border-border/10 bg-muted/5 mt-auto flex h-16 w-full items-center justify-between gap-2 border-t p-4">
+          <Button type="button" variant="outline" onClick={handleClose}>
+            Cancelar
+          </Button>
+          <Button
+            type="button"
+            onClick={handleUpload}
+            disabled={!selectedFile || isUploading}
+            className="relative overflow-hidden"
+          >
+            {isUploading ? (
+              <>
+                <span className="flex items-center gap-2">
+                  <span className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent"></span>
+                  Enviando...
+                </span>
+              </>
+            ) : (
+              "Salvar"
+            )}
+            <span className="absolute inset-0 -z-10 animate-[shimmer_3s_infinite] bg-[linear-gradient(90deg,transparent_25%,rgba(59,130,246,0.3)_50%,transparent_95%)] bg-[length:200%_100%] dark:bg-[linear-gradient(90deg,transparent_25%,rgba(16,185,129,0.15)_50%,transparent_75%)]" />
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
