@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useSession } from "@/lib/auth-client";
-import { updateUserEmail } from "@/actions/user";
+import { updateUserEmail } from "@/actions/user-update-profile/update-email";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -95,32 +95,34 @@ export function ProfileEmailForm() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className="border-border/30 from-card/50 to-card dark:border-border/10 dark:to-card/95 w-full overflow-hidden border bg-gradient-to-br shadow-md transition-all hover:shadow-lg dark:bg-gradient-to-br dark:from-gray-950/80">
-        <CardHeader className="border-border/10 bg-muted/30 dark:bg-muted/5 gap-y-1 border-b pb-4">
-          <div className="flex items-center gap-2">
-            <MailIcon className="text-primary h-5 w-5" />
-            <CardTitle className="text-xl font-semibold tracking-tight">
-              Endereço de email
-            </CardTitle>
+      <Card className="border-border/30 from-card/50 to-card dark:border-border/10 dark:to-card/95 flex w-full flex-col overflow-hidden border bg-gradient-to-br p-0 shadow-md transition-all hover:shadow-lg dark:bg-gradient-to-br dark:from-gray-950/80">
+        <CardHeader className="border-border/10 bg-muted/30 dark:bg-muted/5 gap-y-1 border-b p-0">
+          <div className="px-6 py-4">
+            <div className="flex items-center gap-2">
+              <MailIcon className="text-primary h-5 w-5" />
+              <CardTitle className="text-xl font-semibold tracking-tight">
+                Endereço de email
+              </CardTitle>
+            </div>
+            <CardDescription className="text-muted-foreground/80 mt-1">
+              Atualize seu endereço de email. Um email de verificação será
+              enviado para confirmar a alteração.
+            </CardDescription>
           </div>
-          <CardDescription className="text-muted-foreground/80">
-            Atualize seu endereço de email. Um email de verificação será enviado
-            para confirmar a alteração.
-          </CardDescription>
         </CardHeader>
 
-        <CardContent className="space-y-5 p-6">
+        <CardContent className="-mt-10 flex-1 space-y-5 p-6">
           <Alert className="border border-blue-200/30 bg-blue-50/50 text-blue-800 dark:border-blue-900/20 dark:bg-blue-950/20 dark:text-blue-300">
             <InfoIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
             <AlertTitle className="font-medium text-blue-700 dark:text-blue-300">
               Importante
             </AlertTitle>
             <AlertDescription className="text-blue-600/90 dark:text-blue-400/90">
-              Seu email atual é{" "}
+              Seu email atual é
               <span className="inline-flex items-center rounded-md bg-blue-100/80 px-2 py-1 text-sm font-medium text-blue-800 dark:bg-blue-900/40 dark:text-blue-200">
                 {session?.user?.email}
               </span>
-              . Ao solicitar alteração, você receberá um email de verificação no
+              Ao solicitar alteração, você receberá um email de verificação no
               novo endereço.
             </AlertDescription>
           </Alert>
@@ -142,7 +144,7 @@ export function ProfileEmailForm() {
                   onChange={(e) => setNewEmail(e.target.value)}
                   onFocus={() => setFocused(true)}
                   onBlur={() => setFocused(false)}
-                  className="border-border/40 bg-background/50 focus-visible:border-primary/50 focus-visible:ring-primary/50 dark:border-border/20 mt-1 pl-10 backdrop-blur-sm transition-all"
+                  className="border-border/40 bg-background/50 pl-10 transition-all"
                   required
                 />
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -159,11 +161,7 @@ export function ProfileEmailForm() {
             </div>
 
             <motion.div whileTap={{ scale: 0.98 }} className="mt-2">
-              <Button
-                type="submit"
-                disabled={isPending}
-                className="group from-primary to-primary-foreground/20 text-primary-foreground dark:from-primary/90 dark:to-primary-foreground/70 relative w-full overflow-hidden bg-gradient-to-r transition-all hover:shadow-md"
-              >
+              <Button type="submit" disabled={isPending}>
                 {isPending ? (
                   <div className="flex items-center justify-center gap-2">
                     <Icons.spinner className="h-4 w-4 animate-spin" />
@@ -180,21 +178,13 @@ export function ProfileEmailForm() {
           </form>
         </CardContent>
 
-        <CardFooter className="border-border/10 bg-muted/30 text-muted-foreground dark:bg-muted/5 border-t px-6 py-3 text-xs">
-          Seus dados são protegidos de acordo com nossa política de privacidade
+        <CardFooter className="border-border/10 bg-muted/30 text-muted-foreground dark:bg-muted/5 mt-auto border-t p-0">
+          <div className="w-full px-6 py-3 text-xs">
+            Seus dados são protegidos de acordo com nossa política de
+            privacidade
+          </div>
         </CardFooter>
       </Card>
-
-      <style jsx>{`
-        @keyframes shimmer {
-          0% {
-            background-position: -200% 0;
-          }
-          100% {
-            background-position: 200% 0;
-          }
-        }
-      `}</style>
     </motion.div>
   );
 }

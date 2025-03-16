@@ -18,7 +18,7 @@ export const authRoutes: string[] = [
  */
 export const privateRoutes: string[] = [
   "/dashboard",
-  "/profile",
+  "/user-profile",
   "/settings",
   "/",
 ];

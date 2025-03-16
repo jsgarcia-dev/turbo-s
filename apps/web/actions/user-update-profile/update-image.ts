@@ -5,14 +5,14 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
-const updateNameSchema = z.object({
-  name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres"),
+const updateImageSchema = z.object({
+  imageUrl: z.string().url("URL da imagem inválida"),
 });
 
-export async function updateUserName(formData: FormData) {
+export async function updateUserImage(formData: FormData) {
   try {
-    const name = formData.get("name") as string;
-    const result = updateNameSchema.safeParse({ name });
+    const imageUrl = formData.get("imageUrl") as string;
+    const result = updateImageSchema.safeParse({ imageUrl });
 
     if (!result.success) {
       return {
@@ -33,26 +33,26 @@ export async function updateUserName(formData: FormData) {
       };
     }
 
-    // Atualizar o nome do usuário usando a API do Better Auth
+    // Atualizar a imagem do usuário usando a API do Better Auth
     await auth.api.updateUser({
       body: {
-        name: result.data.name,
+        image: result.data.imageUrl,
       },
       headers: await headers(),
     });
 
     // Revalidar caminhos relevantes
-    revalidatePath("/settings");
+    revalidatePath("/settings/user-profile");
 
     return {
       success: true,
-      message: "Nome atualizado com sucesso",
+      message: "Imagem atualizada com sucesso",
     };
   } catch (error) {
-    console.error("Erro ao atualizar nome:", error);
+    console.error("Erro ao atualizar imagem:", error);
     return {
       success: false,
-      error: { server: ["Erro ao atualizar nome do usuário"] },
+      error: { server: ["Erro ao atualizar imagem do usuário"] },
     };
   }
 }

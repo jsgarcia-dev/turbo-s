@@ -11,16 +11,7 @@ export const metadata: Metadata = {
 
 export default function UserProfilePage() {
   return (
-    <div className="container max-w-4xl space-y-8 py-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">
-          Configurações do Perfil
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          Gerencie suas informações pessoais e configurações de conta.
-        </p>
-      </div>
-
+    <div className="space-y-6">
       <div className="grid gap-6">
         <ProfileImageForm />
         <ProfileNameForm />

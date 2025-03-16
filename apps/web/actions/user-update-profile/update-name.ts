@@ -5,16 +5,14 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
-const updateEmailSchema = z.object({
-  newEmail: z.string().email("Email inválido"),
+const updateNameSchema = z.object({
+  name: z.string().min(5, "O nome deve ter pelo menos 5 caracteres"),
 });
 
-export async function updateUserEmail(formData: FormData) {
+export async function updateUserName(formData: FormData) {
   try {
-    const newEmail = formData.get("newEmail") as string;
-    const callbackURL = (formData.get("callbackURL") as string) || "/perfil";
-
-    const result = updateEmailSchema.safeParse({ newEmail });
+    const name = formData.get("name") as string;
+    const result = updateNameSchema.safeParse({ name });
 
     if (!result.success) {
       return {
@@ -35,28 +33,26 @@ export async function updateUserEmail(formData: FormData) {
       };
     }
 
-    // Atualizar o email do usuário usando a API do Better Auth
-    await auth.api.changeEmail({
+    // Atualizar o nome do usuário usando a API do Better Auth
+    await auth.api.updateUser({
       body: {
-        newEmail: result.data.newEmail,
-        callbackURL,
+        name: result.data.name,
       },
       headers: await headers(),
     });
 
     // Revalidar caminhos relevantes
-    revalidatePath("/settings");
+    revalidatePath("/settings/user-profile");
 
     return {
       success: true,
-      message:
-        "Solicitação de alteração de email enviada. Confira sua caixa de entrada para confirmar.",
+      message: "Nome atualizado com sucesso",
     };
   } catch (error) {
-    console.error("Erro ao atualizar email:", error);
+    console.error("Erro ao atualizar nome:", error);
     return {
       success: false,
-      error: { server: ["Erro ao processar alteração de email"] },
+      error: { server: ["Erro ao atualizar nome do usuário"] },
     };
   }
 }
