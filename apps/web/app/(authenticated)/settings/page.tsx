@@ -74,7 +74,7 @@ export default async function SettingsPage() {
               <CardHeader className="flex px-6 py-6">
                 <div
                   className={cn(
-                    "flex size-11 shrink-0 items-center justify-center rounded-full",
+                    "flex size-11 shrink-0 items-center justify-center rounded-sm",
                     card.bgColor,
                   )}
                 >
