@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Aplicação Web - Turbo-S
 
-## Getting Started
+Esta é a aplicação web do projeto Turbo-S, desenvolvida com [Next.js](https://nextjs.org) 15.2 e React 19.
 
-First, run the development server:
+## Tecnologias Utilizadas
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Framework**: Next.js 15.2.0
+- **UI/UX**: 
+  - Tailwind CSS 4.0
+  - Radix UI (shadcn/ui)
+  - Framer Motion
+- **Gerenciamento de Estado**: Zustand
+- **Formulários**: React Hook Form + Zod
+- **Consultas de Dados**: TanStack Query
+- **Autenticação**: Better Auth
+
+## Estrutura do Projeto
+
+```
+apps/web/
+├── actions/       # Server Actions
+├── app/           # Rotas e páginas da aplicação
+├── components/    # Componentes reutilizáveis
+├── hooks/         # Hooks personalizados
+├── lib/           # Utilitários e configurações
+├── public/        # Arquivos estáticos
+├── services/      # Serviços de API
+└── types/         # Definições de tipos
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Requisitos
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Node.js 18 ou superior
+- pnpm 9.0.0
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Começando
 
-## Learn More
+1. Instale as dependências:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# Na raiz do monorepo
+pnpm install
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Configure as variáveis de ambiente:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+# Copie o arquivo de exemplo
+cp .env.example .env.local
+# Edite o arquivo .env.local com suas configurações
+```
 
-## Deploy on Vercel
+3. Execute o servidor de desenvolvimento:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+# Na raiz do monorepo
+pnpm dev
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Ou apenas a aplicação web
+pnpm --filter web dev
+```
+
+4. Abra [http://localhost:3000](http://localhost:3000) no seu navegador para ver o resultado.
+
+## Scripts Disponíveis
+
+- `pnpm dev` - Inicia o servidor de desenvolvimento com Turbopack
+- `pnpm build` - Constrói a aplicação para produção
+- `pnpm start` - Inicia a aplicação em modo de produção
+- `pnpm lint` - Executa a verificação de linting
+- `pnpm lint:fix` - Corrige problemas de linting automaticamente
+- `pnpm format` - Formata o código com Prettier
+- `pnpm typecheck` - Verifica tipos TypeScript
+
+## Integração com o Backend
+
+Esta aplicação web se comunica com a API NestJS localizada em `apps/api` e compartilha o pacote de banco de dados em `packages/database`.
+
+## Deploy
+
+A aplicação pode ser implantada em qualquer plataforma que suporte Next.js, como:
+
+- [Vercel](https://vercel.com)
+- [Netlify](https://netlify.com)
+- [AWS Amplify](https://aws.amazon.com/amplify/)
+
+Para implantar na Vercel, que é a plataforma recomendada para Next.js:
+
+```bash
+pnpm build
+# Siga as instruções da plataforma de deploy escolhida
+```
+
+## Mais Informações
+
+Para saber mais sobre Next.js, consulte os seguintes recursos:
+
+- [Documentação do Next.js](https://nextjs.org/docs)
+- [Aprenda Next.js](https://nextjs.org/learn)
