@@ -6,7 +6,7 @@ import { prisma } from "@repo/database";
 
 /**
  * Recupera informações sobre os provedores de autenticação do usuário atual
- *
+ * Server Action use em server components
  * @returns Objeto com detalhes sobre os provedores de autenticação do usuário
  */
 export async function getUserAuthProviders() {
