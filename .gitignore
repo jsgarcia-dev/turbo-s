@@ -5,6 +5,14 @@ node_modules
 .pnp
 .pnp.js
 
+# Editor configs
+.cursor
+.vscode
+.idea
+*.sublime-project
+*.sublime-workspace
+settings.json
+
 # Local env files
 .env
 .env.local
