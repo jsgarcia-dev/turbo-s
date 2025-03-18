@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { mailConfigSchema } from './mail.config';
-import { storageConfigSchema } from './storage.config';
 
 const envSchema = z.object({
   // API
@@ -24,9 +23,6 @@ const envSchema = z.object({
 
   // Email
   ...mailConfigSchema.shape,
-
-  // Supabase Storage
-  ...storageConfigSchema.shape,
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;

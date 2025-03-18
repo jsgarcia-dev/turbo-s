@@ -8,7 +8,7 @@
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "dev": {
-      "dependsOn": ["@repo/database#build"],
+      "dependsOn": ["@repo/database#build", "@repo/database#db:generate"],
       "cache": false,
       "persistent": true
     },

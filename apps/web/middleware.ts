@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSessionCookie } from "better-auth";
+import { getSessionCookie } from "better-auth/cookies";
 import { authRoutes, publicRoutes, DEFAULT_LOGIN_REDIRECT } from "@/lib/routes";
 
 export async function middleware(request: NextRequest) {
