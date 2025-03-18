@@ -5,6 +5,7 @@ import { ProfileEmailForm } from "./components/ProfileEmailForm";
 import { ProfilePasswordForm } from "./components/ProfilePasswordForm";
 import { SetPasswordForm } from "./components/ProfileSetPasswordForm";
 import { getUserAuthProviders } from "@/helpers/user-auth-provider";
+import { OAuthProfileInfo } from "./components/OAuthProfileInfo";
 
 export const metadata: Metadata = {
   title: "Configurações do Perfil",
@@ -18,8 +19,20 @@ export default async function UserProfilePage() {
     <div className="space-y-6">
       <div className="grid gap-6">
         <ProfileImageForm />
-        <ProfileNameForm />
-        <ProfileEmailForm />
+
+        {userAuth.hasOAuth ? (
+          <OAuthProfileInfo
+            name={userAuth.user?.name}
+            email={userAuth.user?.email}
+            providers={userAuth.oauthProviders}
+          />
+        ) : (
+          <>
+            <ProfileNameForm />
+            <ProfileEmailForm />
+          </>
+        )}
+
         {userAuth.hasCredential ? (
           <ProfilePasswordForm />
         ) : (
