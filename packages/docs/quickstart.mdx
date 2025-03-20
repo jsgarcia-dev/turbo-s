@@ -1,0 +1,91 @@
+---
+title: "Início Rápido"
+description: "Comece a usar o TurboS em minutos"
+---
+
+# Início Rápido
+
+Este guia ajudará você a configurar e executar o TurboS em seu ambiente local.
+
+## Pré-requisitos
+
+Antes de começar, certifique-se de ter o seguinte instalado:
+
+- Node.js (versão 18 ou superior)
+- npm ou pnpm (recomendamos pnpm)
+- PostgreSQL (para o banco de dados)
+
+## Instalação
+
+1. Clone o repositório:
+
+```bash
+git clone https://github.com/yourusername/turbo-s.git
+cd turbo-s
+```
+
+2. Instale as dependências:
+
+```bash
+pnpm install
+```
+
+3. Configure as variáveis de ambiente:
+
+```bash
+cp apps/web/.env.example apps/web/.env.local
+```
+
+Edite o arquivo `.env.local` e configure suas variáveis de ambiente:
+
+```bash
+# Database
+DATABASE_URL="postgresql://postgres:password@localhost:5432/turbos"
+DIRECT_URL="postgresql://postgres:password@localhost:5432/turbos"
+
+# Auth
+AUTH_SECRET="seu-segredo-aqui"
+GOOGLE_CLIENT_ID="seu-client-id-do-google"
+GOOGLE_CLIENT_SECRET="seu-client-secret-do-google"
+```
+
+4. Execute a migração do banco de dados:
+
+```bash
+cd packages/database
+pnpm dlx prisma migrate dev
+```
+
+## Desenvolvimento
+
+Para iniciar o servidor de desenvolvimento:
+
+```bash
+pnpm dev
+```
+
+Isso iniciará o servidor em `http://localhost:3000`.
+
+## Build de Produção
+
+Para criar uma build de produção:
+
+```bash
+pnpm build
+```
+
+Para iniciar o servidor de produção:
+
+```bash
+pnpm start
+```
+
+## Removendo a Documentação (opcional)
+
+Se você não precisar da documentação do Mintlify, você pode removê-la executando:
+
+```bash
+pnpm remove-docs
+```
+
+Este comando removerá todos os arquivos de documentação e suas dependências do projeto.

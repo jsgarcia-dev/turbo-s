@@ -1,0 +1,181 @@
+# Módulos da API
+
+A API do TurboS é estruturada em módulos, seguindo as melhores práticas do NestJS. Cada módulo encapsula uma parte específica da funcionalidade da aplicação, tornando o código organizado e escalável.
+
+## Estrutura de Módulos
+
+```
+src/
+├── modules/
+│   ├── auth/         # Autenticação e autorização
+│   ├── users/        # Gerenciamento de usuários
+│   └── mail/         # Serviço de email
+├── common/           # Utilitários compartilhados
+│   ├── decorators/   # Decorators personalizados
+│   ├── filters/      # Filtros de exceção
+│   ├── guards/       # Guardas de autenticação
+│   └── interceptors/ # Interceptadores
+└── config/           # Configurações da aplicação
+```
+
+## Módulos Principais
+
+### AuthModule
+
+Responsável pela autenticação e autorização dos usuários.
+
+```typescript
+@Module({
+  imports: [
+    JwtModule.register(/* configuração */),
+    // outros imports
+  ],
+  controllers: [AuthController],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    // outros providers
+  ],
+  exports: [AuthService],
+})
+export class AuthModule {}
+```
+
+#### Funcionalidades:
+
+- Login e registro de usuários
+- Geração e validação de tokens JWT
+- Controle de acesso baseado em roles (RBAC)
+- Gerenciamento de JWKS para assinatura segura de tokens
+
+### UsersModule
+
+Gerencia as operações relacionadas aos usuários.
+
+```typescript
+@Module({
+  controllers: [UsersController],
+  providers: [UsersService],
+  exports: [UsersService],
+})
+export class UsersModule {}
+```
+
+#### Funcionalidades:
+
+- CRUD de usuários
+- Consultas e filtros avançados
+- Gerenciamento de perfis
+- Controle de permissões
+
+### MailModule
+
+Fornece serviços para envio de emails.
+
+```typescript
+@Module({
+  providers: [MailService],
+  exports: [MailService],
+})
+export class MailModule {}
+```
+
+#### Funcionalidades:
+
+- Envio de emails transacionais
+- Templates de email
+- Filas e retry em caso de falha
+- Configuração flexível de serviços de email
+
+## Componentes de Módulos
+
+Cada módulo do NestJS tipicamente contém:
+
+### Controllers
+
+Tratam as requisições HTTP e delegam a lógica de negócios para os serviços.
+
+```typescript
+@Controller("users")
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
+
+  @Get()
+  @Roles(UserRole.ADMIN)
+  findAll() {
+    return this.usersService.findAll();
+  }
+
+  @Get(":id")
+  findOne(@Param("id") id: string) {
+    return this.usersService.findOne(id);
+  }
+
+  // mais endpoints
+}
+```
+
+### Services
+
+Contêm a lógica de negócios e interagem com o banco de dados.
+
+```typescript
+@Injectable()
+export class UsersService {
+  async findAll() {
+    return prisma.user.findMany();
+  }
+
+  async findOne(id: string) {
+    return prisma.user.findUnique({
+      where: { id },
+    });
+  }
+
+  // mais métodos
+}
+```
+
+### DTOs (Data Transfer Objects)
+
+Definem a estrutura dos dados que são transferidos entre camadas.
+
+```typescript
+export class CreateUserDto {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  @MinLength(8)
+  password: string;
+
+  @IsString()
+  name: string;
+}
+```
+
+## Comunicação entre Módulos
+
+Os módulos do NestJS podem se comunicar de várias formas:
+
+1. **Injeção de Dependência**: Exportar providers de um módulo e importá-los em outro
+2. **Eventos**: Publicação e assinatura de eventos (Event-Driven Architecture)
+3. **Padrão Mediator**: Utilizando um barramento de comandos ou queries
+
+## Extensibilidade
+
+Novos módulos podem ser adicionados facilmente para estender a funcionalidade:
+
+```bash
+# Usando o CLI do NestJS
+nest generate module nome-do-modulo
+nest generate controller nome-do-modulo
+nest generate service nome-do-modulo
+```
+
+## Boas Práticas
+
+1. **Coesão**: Cada módulo deve ter uma única responsabilidade
+2. **Acoplamento Baixo**: Minimizar dependências entre módulos
+3. **Abstração**: Exportar interfaces em vez de implementações concretas
+4. **Testabilidade**: Projetar módulos para serem facilmente testáveis

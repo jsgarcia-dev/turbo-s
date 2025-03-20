@@ -79,6 +79,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9.21.0",
     "eslint-config-next": "15.1.7",
+    "mintlify": "^4.0.438",
     "postcss": "^8.5.3",
     "prettier": "^3.5.2",
     "prettier-plugin-tailwindcss": "^0.6.11",

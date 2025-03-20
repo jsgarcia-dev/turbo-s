@@ -11,7 +11,7 @@ export default async function HomePage() {
     headers: await headers(),
   });
 
-  // console.log(token);
+  console.log(token);
 
   return (
     <div className="flex flex-col gap-4 p-8">

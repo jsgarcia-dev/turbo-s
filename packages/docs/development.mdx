@@ -1,0 +1,105 @@
+---
+title: "Guia de Desenvolvimento"
+description: "Como desenvolver e contribuir para o TurboS"
+---
+
+# Guia de Desenvolvimento
+
+Este guia fornece informações sobre como configurar seu ambiente de desenvolvimento e contribuir para o projeto TurboS.
+
+## Configuração do Ambiente
+
+### Ambiente de Desenvolvimento
+
+Recomendamos usar o Visual Studio Code com as seguintes extensões:
+
+- ESLint
+- Prettier
+- Tailwind CSS IntelliSense
+- Prisma
+- GitLens
+
+### Verificações de Código
+
+O TurboS utiliza várias ferramentas para garantir a qualidade do código:
+
+- **ESLint**: Para análise estática de código
+- **Prettier**: Para formatação consistente
+- **TypeScript**: Para verificação de tipos
+
+Você pode executar essas verificações com os seguintes comandos:
+
+```bash
+# Verificar erros de lint
+pnpm lint
+
+# Corrigir erros de lint automaticamente
+pnpm lint:fix
+
+# Verificar formatação
+pnpm format:check
+
+# Formatar código
+pnpm format
+
+# Verificar tipos
+pnpm typecheck
+```
+
+## Estrutura de Pastas
+
+```
+apps/web/
+├── actions/         # Server Actions
+├── app/             # Rotas e componentes da aplicação
+├── components/      # Componentes compartilhados
+├── helpers/         # Funções auxiliares
+├── hooks/           # React hooks personalizados
+├── lib/             # Bibliotecas e configurações
+├── services/        # Serviços da aplicação
+└── types/           # Definições de tipos
+```
+
+## Fluxo de Trabalho de Desenvolvimento
+
+1. **Crie uma branch para sua feature**:
+
+```bash
+git checkout -b feature/nome-da-feature
+```
+
+2. **Desenvolva sua feature**: Implemente sua feature ou correção de bug conforme necessário.
+
+3. **Teste localmente**: Garanta que suas alterações funcionem corretamente e não quebrem funcionalidades existentes.
+
+4. **Commits**: Faça commits pequenos e significativos, seguindo a convenção de commits do projeto.
+
+5. **Pull Request**: Envie um Pull Request para a branch principal, descrevendo as alterações feitas.
+
+## Padrões de Código
+
+### Convenção de Nomenclatura
+
+- **Pastas e arquivos**: Use kebab-case para nomes de pastas e arquivos (ex: `user-profile.tsx`)
+- **Componentes React**: Use PascalCase para componentes (ex: `UserProfile.tsx`)
+- **Funções e variáveis**: Use camelCase (ex: `getUserData`)
+- **Tipos e interfaces**: Use PascalCase (ex: `UserProfileProps`)
+
+### Estilo de Código
+
+Seguimos as práticas recomendadas da comunidade para React, Next.js e TypeScript. Consulte o arquivo `.eslintrc.js` para conhecer nossas regras específicas.
+
+## Banco de Dados
+
+Usamos Prisma como ORM para interagir com o banco de dados PostgreSQL. O schema do banco de dados está definido em `packages/database/prisma/schema.prisma`.
+
+Para aplicar alterações no schema:
+
+```bash
+cd packages/database
+pnpm dlx prisma migrate dev --name nome-da-migracao
+```
+
+## Testes
+
+Ainda estamos implementando a estratégia de testes. Em breve, adicionaremos informações sobre como escrever e executar testes.

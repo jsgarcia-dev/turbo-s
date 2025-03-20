@@ -1,0 +1,88 @@
+---
+title: "Introdução à API"
+description: "Visão geral da API do TurboS"
+---
+
+# Introdução à API REST
+
+A API REST do TurboS fornece endpoints para interagir com todos os recursos do sistema. Esta documentação permite que você teste os endpoints diretamente pelo navegador.
+
+## Base URL
+
+```
+http://localhost:3001/api
+```
+
+Em produção, a URL base seria o domínio onde a API está hospedada.
+
+## Autenticação
+
+A maioria dos endpoints requer autenticação via Bearer Token JWT:
+
+```
+Authorization: Bearer <seu_token_jwt>
+```
+
+Você pode obter um token usando o endpoint de login.
+
+## Formatos de Resposta
+
+Todas as respostas são retornadas no formato JSON com a seguinte estrutura padrão:
+
+**Sucesso**
+
+```json
+{
+  "status": "success",
+  "data": { ... }
+}
+```
+
+**Erro**
+
+```json
+{
+  "status": "error",
+  "message": "Descrição do erro",
+  "code": "ERRO_CODE",
+  "statusCode": 400
+}
+```
+
+## Rate Limiting
+
+A API implementa limitação de taxa (rate limiting) para prevenir abusos:
+
+- 100 requisições por minuto por IP
+
+## Como Usar Esta Documentação
+
+1. Navegue pelos endpoints no menu lateral
+2. Preencha os parâmetros necessários nos exemplos
+3. Clique em "Testar" para executar as requisições
+4. Veja as respostas em tempo real
+
+Vamos começar explorando os endpoints disponíveis!
+
+## Endpoints Principais
+
+### Autenticação
+
+- `POST /api/auth/sign-in` - Login de usuário
+- `POST /api/auth/sign-up` - Registro de usuário
+- `POST /api/auth/sign-out` - Logout de usuário
+
+### Usuários
+
+- `GET /api/users/me` - Obter perfil do usuário atual
+- `PATCH /api/users/me` - Atualizar perfil do usuário atual
+
+## Versionamento
+
+A API do TurboS utiliza versionamento semântico e está atualmente na versão v1. Para especificar uma versão, inclua-a na URL:
+
+```
+https://your-turbos-instance.com/api/v1/users/me
+```
+
+Você pode encontrar documentação detalhada de cada endpoint nas seções específicas.

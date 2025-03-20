@@ -91,6 +91,38 @@ pnpm build
 # Siga as instruções da plataforma de deploy escolhida
 ```
 
+## Documentação
+
+O TurboS inclui uma documentação detalhada usando Mintlify, com informações sobre:
+
+- Estrutura da aplicação
+- Componentes de UI
+- Autenticação
+- API
+- E muito mais
+
+### Visualizando a documentação
+
+Para iniciar o servidor de documentação localmente:
+
+```bash
+npm run docs:dev
+```
+
+Isso iniciará um servidor em `http://localhost:3000` com a documentação completa.
+
+### Removendo a documentação
+
+Se você não precisar da documentação, você pode removê-la completamente do projeto:
+
+```bash
+npm run remove-docs
+```
+
+Esta ação é irreversível e remove todos os arquivos de documentação e dependências relacionadas.
+
+Para mais informações sobre a documentação, consulte o arquivo [docs/README.md](./docs/README.md).
+
 ## Mais Informações
 
 Para saber mais sobre Next.js, consulte os seguintes recursos:

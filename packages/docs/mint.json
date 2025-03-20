@@ -1,0 +1,115 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "TurboS Documentation",
+  "favicon": "/public/favicon.png",
+  "colors": {
+    "primary": "#0D9373",
+    "light": "#07C983",
+    "dark": "#0D9373",
+    "anchors": {
+      "from": "#0D9373",
+      "to": "#07C983"
+    }
+  },
+  "topbarLinks": [
+    {
+      "name": "GitHub",
+      "url": "https://github.com/yourusername/turbo-s"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Dashboard",
+    "url": "/"
+  },
+  "tabs": [
+    {
+      "name": "API Reference",
+      "url": "api-reference"
+    },
+    {
+      "name": "Database",
+      "url": "database"
+    },
+    {
+      "name": "API Backend",
+      "url": "api"
+    }
+  ],
+  "anchors": [
+    {
+      "name": "Documentation",
+      "icon": "book-open-cover",
+      "url": "https://mintlify.com/docs"
+    },
+    {
+      "name": "Community",
+      "icon": "slack",
+      "url": "https://mintlify.com/community"
+    },
+    {
+      "name": "Blog",
+      "icon": "newspaper",
+      "url": "https://mintlify.com/blog"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": ["introduction", "quickstart", "development"]
+    },
+    {
+      "group": "App Structure",
+      "pages": ["app-structure"]
+    },
+    {
+      "group": "Database",
+      "pages": ["database/overview", "database/schema"]
+    },
+    {
+      "group": "API Backend",
+      "pages": ["api/overview", "api/modules", "api/authentication"]
+    },
+    {
+      "group": "Authentication",
+      "pages": [
+        "authentication/overview",
+        "authentication/methods",
+        "authentication/middleware"
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": ["api-reference/introduction", "api-reference/playground"]
+    },
+    {
+      "group": "Endpoints",
+      "pages": [
+        "api-reference/auth",
+        "api-reference/users",
+        "api-reference/chat"
+      ]
+    },
+    {
+      "group": "OpenAPI",
+      "pages": ["api-reference/openapi"]
+    },
+    {
+      "group": "Components",
+      "pages": ["components/overview"]
+    }
+  ],
+  "footerSocials": {
+    "github": "https://github.com/yourusername/turbo-s"
+  },
+  "api": {
+    "baseUrl": "http://localhost:3001/api",
+    "auth": {
+      "method": "bearer"
+    },
+    "playground": {
+      "mode": "show"
+    },
+    "maintainOrder": true
+  },
+  "openapi": "/api-reference/openapi.json"
+}

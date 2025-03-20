@@ -1,0 +1,160 @@
+# Schema do Banco de Dados
+
+Este documento detalha a estrutura do banco de dados definida pelo Prisma Schema no pacote `@repo/database`.
+
+## Configuração do Prisma
+
+O arquivo `schema.prisma` contém a definição do gerador do cliente Prisma e a configuração da fonte de dados:
+
+```prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+```
+
+## Enumerações
+
+### UserRole
+
+Define os níveis de acesso disponíveis para usuários no sistema.
+
+```prisma
+enum UserRole {
+  MASTER  // Acesso completo ao sistema
+  ADMIN   // Acesso administrativo
+  USER    // Acesso padrão (usuário comum)
+}
+```
+
+## Modelos
+
+### User
+
+Armazena informações básicas dos usuários do sistema.
+
+```prisma
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  role          UserRole? @default(USER)
+  sessions      Session[]
+  accounts      Account[]
+
+  @@unique([email])
+  @@map("user")
+}
+```
+
+### Session
+
+Gerencia as sessões ativas dos usuários.
+
+```prisma
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+```
+
+### Account
+
+Armazena informações de autenticação, incluindo contas locais e de provedores externos.
+
+```prisma
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("account")
+}
+```
+
+### Verification
+
+Armazena tokens para verificação de email, redefinição de senha e outras ações verificáveis.
+
+```prisma
+model Verification {
+  id         String    @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
+
+  @@map("verification")
+}
+```
+
+### Jwks
+
+Armazena pares de chaves públicas e privadas para assinatura de tokens JWT.
+
+```prisma
+model Jwks {
+  id         String   @id @default(cuid())
+  publicKey  String   @db.Text
+  privateKey String   @db.Text
+  createdAt  DateTime @default(now())
+
+  @@map("jwks")
+}
+```
+
+## Relacionamentos
+
+O banco de dados utiliza os seguintes relacionamentos:
+
+1. **User ↔ Session (1:N)**: Um usuário pode ter múltiplas sessões ativas.
+2. **User ↔ Account (1:N)**: Um usuário pode ter múltiplas contas de autenticação.
+
+## Convenções de Nomenclatura
+
+- Todos os nomes de tabelas estão no singular (`user`, não `users`)
+- Nomes de tabelas usam snake_case através da diretiva `@@map()`
+- Todos os modelos têm campos `id`, `createdAt` e `updatedAt`
+
+## Migrações
+
+Para aplicar alterações ao banco de dados após modificar o esquema, execute:
+
+```bash
+# Para desenvolvimento (cria uma nova migração)
+pnpm db:migrate nome-da-migracao
+
+# Para produção (aplica migrações existentes)
+pnpm db:deploy
+```

@@ -29,10 +29,21 @@ async function bootstrap() {
   // Middlewares de segurança
   app.use(helmet());
   app.use(compression());
+
+  // Configuração de CORS avançada
+  const corsOrigins = appConfig.corsOrigin.split(',');
   app.enableCors({
-    origin: appConfig.corsOrigin,
+    origin: corsOrigins,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Requested-With',
+      'Accept',
+    ],
+    exposedHeaders: ['Authorization'],
+    maxAge: 3600,
   });
 
   // Pipes globais

@@ -1,0 +1,135 @@
+---
+title: "Estrutura da Aplicação"
+description: "Entenda a organização e estrutura do TurboS"
+---
+
+# Estrutura da Aplicação
+
+O TurboS segue uma arquitetura moderna baseada em Next.js App Router, com uma separação clara entre frontend e backend, utilizando Server Components, Server Actions e React Server Components.
+
+## Visão Geral
+
+```
+apps/web/
+├── app/                  # Código principal da aplicação (Next.js App Router)
+│   ├── (authenticated)/  # Rotas que requerem autenticação
+│   ├── (marketing)/      # Páginas de marketing (landing page, etc.)
+│   ├── auth/             # Rotas de autenticação (login, registro, etc.)
+│   ├── api/              # Endpoints da API
+│   └── layout.tsx        # Layout principal da aplicação
+├── actions/              # Server Actions para operações de backend
+├── components/           # Componentes React reutilizáveis
+├── lib/                  # Utilitários, configurações e inicialização
+└── public/               # Arquivos estáticos
+```
+
+## Diretórios Principais
+
+### App
+
+O diretório `app/` contém toda a estrutura de roteamento da aplicação, seguindo a convenção do Next.js App Router:
+
+- **`(authenticated)/`**: Rotas protegidas que requerem autenticação
+- **`(marketing)/`**: Páginas públicas voltadas para marketing
+- **`auth/`**: Fluxos de autenticação como login, cadastro e recuperação de senha
+- **`api/`**: Endpoints da API RESTful
+- **`layout.tsx`**: Layout raiz da aplicação
+
+### Componentes
+
+O diretório `components/` contém componentes React reutilizáveis:
+
+- **`ui/`**: Componentes básicos de UI
+- **`forms/`**: Componentes relacionados a formulários
+- **`layout/`**: Componentes de layout
+- **`shared/`**: Componentes compartilhados entre diferentes partes da aplicação
+
+### Lib
+
+O diretório `lib/` contém configurações e utilitários:
+
+- **`auth.ts`**: Configuração de autenticação
+- **`utils.ts`**: Funções utilitárias
+- **`constants.ts`**: Constantes da aplicação
+- **`types.ts`**: Tipos TypeScript compartilhados
+
+### Actions
+
+O diretório `actions/` contém Server Actions do Next.js para operações de backend:
+
+- **`user-update-profile/`**: Ações para atualização de perfil
+- **`auth/`**: Ações relacionadas à autenticação
+
+## Fluxo de Dados
+
+O TurboS segue um fluxo de dados claro:
+
+1. **Componentes de UI**: Responsáveis pela apresentação
+2. **Server Actions**: Executam operações no servidor
+3. **Base de Dados**: Armazena dados através do Prisma
+
+## Convenções de Nomenclatura
+
+- **Páginas**: `page.tsx` para páginas de rota
+- **Layouts**: `layout.tsx` para layouts
+- **Componentes**: PascalCase (ex: `Button.tsx`)
+- **Server Actions**: camelCase (ex: `updateUser.ts`)
+- **Utilitários**: camelCase (ex: `formatDate.ts`)
+
+## Estrutura de Pastas Ampliada
+
+Para uma visão ainda mais detalhada da estrutura do projeto:
+
+```
+apps/web/
+├── app/
+│   ├── (authenticated)/
+│   │   ├── dashboard/
+│   │   ├── settings/
+│   │   │   ├── user-profile/
+│   │   │   └── ...
+│   │   └── layout.tsx
+│   ├── (marketing)/
+│   │   ├── about/
+│   │   ├── features/
+│   │   ├── pricing/
+│   │   └── layout.tsx
+│   ├── auth/
+│   │   ├── sign-in/
+│   │   ├── sign-up/
+│   │   ├── reset-password/
+│   │   └── verify/
+│   ├── api/
+│   │   └── auth/
+│   └── layout.tsx
+├── actions/
+│   ├── user-update-profile/
+│   │   ├── update-email.ts
+│   │   ├── update-name.ts
+│   │   └── update-password.ts
+│   └── ...
+└── components/
+    ├── ui/
+    │   ├── button.tsx
+    │   ├── card.tsx
+    │   └── ...
+    ├── forms/
+    │   └── ...
+    └── layout/
+        └── ...
+```
+
+## Monorepo com Turborepo
+
+O TurboS utiliza Turborepo para gerenciar o monorepo:
+
+```
+turbo-s/
+├── apps/
+│   └── web/             # Aplicação Next.js
+├── packages/
+│   ├── database/        # Camada de acesso ao banco de dados
+│   ├── ui/              # (opcional) Biblioteca de componentes UI
+│   └── config/          # (opcional) Configurações compartilhadas
+└── turbo.json           # Configuração do Turborepo
+```

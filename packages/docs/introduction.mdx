@@ -1,0 +1,58 @@
+---
+title: "Introdução ao TurboS"
+description: "Bem-vindo à documentação oficial do TurboS"
+---
+
+# Introdução
+
+Bem-vindo à documentação do TurboS!
+
+## Testando a API
+
+Para testar a API diretamente, você pode usar:
+
+1. **Swagger UI**: Acesse [http://localhost:3001/api/docs](http://localhost:3001/api/docs) com o servidor rodando
+2. **Postman/Insomnia**: Importe a [especificação OpenAPI](http://localhost:3001/api/docs-json)
+3. **cURL**: Veja exemplos em cada endpoint desta documentação
+
+> **Dica**: Para endpoints protegidos, obtenha um token JWT usando o endpoint de login primeiro.
+
+## O que é o TurboS?
+
+TurboS é um monorepo completo que inclui uma API REST, um aplicativo web moderno e documentação. Este projeto segue as melhores práticas de desenvolvimento e utiliza tecnologias modernas.
+
+## Principais Recursos
+
+- **API REST**: Uma API robusta construída com NestJS e TypeScript
+- **Aplicativo Web**: Interface de usuário moderna com Next.js e React
+- **Banco de Dados**: Abstração com Prisma ORM
+- **Autenticação**: Sistema de autenticação JWT seguro
+- **Documentação**: Esta documentação interativa
+
+## Começando
+
+Para começar a usar o TurboS, confira nosso [Guia de Início Rápido](/quickstart).
+
+## Estrutura do Projeto
+
+O TurboS segue uma estrutura monorepo usando Turborepo, que permite organizar o código em múltiplos pacotes:
+
+```
+turbo-s/
+├── apps/
+│   ├── web/           # Aplicação Next.js principal
+│   └── docs/          # Documentação (Mintlify)
+├── packages/
+│   ├── database/      # Camada de acesso ao banco de dados
+│   ├── ui/            # Componentes UI compartilhados
+│   └── config/        # Configurações compartilhadas
+└── turbo.json         # Configuração do Turborepo
+```
+
+## Contribuindo
+
+Contribuições são bem-vindas! Consulte nosso [guia de contribuição](/contributing) para saber como participar do desenvolvimento.
+
+## Licença
+
+TurboS é licenciado sob a [Licença MIT](https://opensource.org/licenses/MIT).

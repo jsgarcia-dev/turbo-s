@@ -1,0 +1,90 @@
+# Pacote Database (@repo/database)
+
+O pacote `@repo/database` é responsável pelo gerenciamento do banco de dados do TurboS, oferecendo uma camada de abstração para interação com o PostgreSQL através do Prisma ORM.
+
+## Visão Geral
+
+Este pacote compartilhado fornece:
+
+- Cliente do Prisma pré-configurado
+- Definições de modelos de dados
+- Scripts para gerenciamento de migração
+- Exportações de tipos para uso em outros pacotes
+
+## Conexão com o Banco de Dados
+
+O TurboS utiliza PostgreSQL como banco de dados principal, com suporte ao Supabase para hospedagem.
+
+```bash
+# Configuração da conexão no arquivo .env
+DATABASE_URL="postgresql://postgres:[SENHA]@db.[REFERENCIA-PROJETO].supabase.co:5432/postgres"
+DIRECT_URL="postgresql://postgres:[SENHA]@db.[REFERENCIA-PROJETO].supabase.co:5432/postgres"
+```
+
+## Modelos de Dados
+
+### Usuários e Autenticação
+
+| Modelo         | Descrição                                                     |
+| -------------- | ------------------------------------------------------------- |
+| `User`         | Informações do usuário, incluindo nome, email e função (role) |
+| `Session`      | Sessões de usuário ativas                                     |
+| `Account`      | Contas de autenticação (local ou provedores externos)         |
+| `Verification` | Tokens de verificação para email, redefinição de senha, etc.  |
+| `Jwks`         | Chaves JSON Web para assinatura de tokens JWT                 |
+
+## Scripts Disponíveis
+
+O pacote de banco de dados inclui vários scripts úteis para gerenciar o banco de dados:
+
+```bash
+# Gerar o cliente Prisma com os tipos atualizados
+pnpm db:generate
+
+# Criar uma nova migração
+pnpm db:migrate [nome-da-migracao]
+
+# Aplicar alterações sem criar uma migração formal
+pnpm db:push
+
+# Implantar migrações em ambiente de produção
+pnpm db:deploy
+
+# Redefinir o banco de dados (excluir todos os dados)
+pnpm db:reset
+
+# Interface visual para explorar o banco de dados
+pnpm db:studio
+```
+
+## Como Usar em Outros Pacotes
+
+Para utilizar o pacote de banco de dados em outros módulos do projeto:
+
+```typescript
+// Importar o cliente Prisma e os tipos
+import { prisma, User, UserRole } from "@repo/database";
+
+// Exemplo de consulta
+async function getUsers() {
+  const users = await prisma.user.findMany({
+    where: {
+      role: UserRole.ADMIN,
+    },
+  });
+
+  return users;
+}
+```
+
+## Considerações de Segurança
+
+- Nunca compartilhe as credenciais de banco de dados ou as inclua no controle de versão
+- O banco de dados deve ser acessado apenas através da camada de abstração Prisma
+- Utilize migrations para alterações estruturais para manter a integridade do banco
+
+## Referências
+
+- [Prisma Documentation](https://www.prisma.io/docs)
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+- [Supabase Documentation](https://supabase.com/docs)

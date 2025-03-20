@@ -1,0 +1,75 @@
+---
+title: "API Playground"
+description: "Teste interativo dos endpoints da API"
+---
+
+# API Playground
+
+Use esta interface para testar os endpoints da API.
+
+<Note>
+  Para endpoints protegidos, você precisará obter um token de autenticação
+  usando o endpoint `/auth/login` e adicioná-lo ao cabeçalho Authorization como
+  `Bearer seu-token`.
+</Note>
+
+## Instruções para testar a API
+
+1. Primeiro, faça login usando o endpoint de autenticação abaixo
+2. Copie o token JWT da resposta (campo `data.token`)
+3. Use este token para testar os outros endpoints protegidos
+
+### 1. Login de usuário (Primeiro passo)
+
+```bash
+curl -X POST http://localhost:3001/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "usuario@exemplo.com", "password": "senha123"}'
+```
+
+### 2. Exemplo de resposta de login
+
+```json
+{
+  "status": "success",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+      "id": "clz8a9d3h0000qw1j3wyt7d8b",
+      "name": "Usuário Exemplo",
+      "email": "usuario@exemplo.com",
+      "role": "USER"
+    }
+  }
+}
+```
+
+### 3. Criar um tópico de chat (com o token)
+
+```bash
+curl -X POST http://localhost:3001/api/chat/topic \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
+  -d '{"title": "Conversa sobre desenvolvimento web"}'
+```
+
+### 4. Listar usuários (com o token)
+
+```bash
+curl -X GET http://localhost:3001/api/users \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI"
+```
+
+## Uso com Postman ou Insomnia
+
+Para uma experiência mais interativa, recomendamos usar ferramentas como Postman ou Insomnia para testar a API.
+
+1. Crie uma nova coleção para o TurboS
+2. Configure um ambiente com a variável:
+   - `baseUrl`: http://localhost:3001/api
+   - `token`: [deixe vazio inicialmente]
+3. Faça uma requisição de login para obter o token
+4. Salve o token na variável de ambiente
+5. Use a variável de token para as requisições autenticadas
+
+![Exemplo Postman](/assets/postman-example.png)

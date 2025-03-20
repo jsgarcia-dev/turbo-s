@@ -18,6 +18,18 @@
     "check-types": {
       "dependsOn": ["^check-types"]
     },
+    "docs": {
+      "outputs": [],
+      "cache": false,
+      "persistent": true
+    },
+    "docs:build": {
+      "outputs": ["dist/**"]
+    },
+    "docs:preview": {
+      "cache": false,
+      "persistent": true
+    },
     "db:generate": {
       "cache": false
     },

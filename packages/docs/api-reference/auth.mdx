@@ -1,0 +1,281 @@
+---
+title: "Autenticação"
+openapi: "POST /auth/login"
+operationId: "loginUser"
+description: "Endpoints para autenticação e gerenciamento de sessões"
+---
+
+# Autenticação
+
+Os endpoints de autenticação permitem que usuários façam login, registrem-se e gerenciem suas sessões.
+
+## Login
+
+<ParamField body="email" type="string" required>
+  Email do usuário
+</ParamField>
+
+<ParamField body="password" type="string" required>
+  Senha do usuário
+</ParamField>
+
+<ResponseField name="status" type="string">
+  Status da resposta
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Dados da resposta
+  <Expandable title="Toggle data">
+    <ResponseField name="token" type="string">
+      Token JWT para autenticação
+    </ResponseField>
+    <ResponseField name="user" type="object">
+      Dados do usuário
+      <Expandable title="Toggle user">
+        <ResponseField name="id" type="string">
+          ID único do usuário
+        </ResponseField>
+        <ResponseField name="name" type="string">
+          Nome do usuário
+        </ResponseField>
+        <ResponseField name="email" type="string">
+          Email do usuário
+        </ResponseField>
+        <ResponseField name="role" type="string">
+          Função do usuário (USER, ADMIN)
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```json Request
+{
+  "email": "usuario@exemplo.com",
+  "password": "senha123"
+}
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "status": "success",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+      "id": "clz8a9d3h0000qw1j3wyt7d8b",
+      "name": "Usuário Exemplo",
+      "email": "usuario@exemplo.com",
+      "role": "USER"
+    }
+  }
+}
+```
+</ResponseExample>
+
+## Registro
+
+<EndpointDetails path="/auth/register" method="POST" />
+
+<ParamField body="name" type="string" required>
+  Nome completo do usuário
+</ParamField>
+
+<ParamField body="email" type="string" required>
+  Email do usuário
+</ParamField>
+
+<ParamField body="password" type="string" required>
+  Senha do usuário (mínimo 8 caracteres)
+</ParamField>
+
+<ResponseField name="status" type="string">
+  Status da resposta
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Dados do usuário criado
+  <Expandable title="Toggle data">
+    <ResponseField name="id" type="string">
+      ID único do usuário
+    </ResponseField>
+    <ResponseField name="name" type="string">
+      Nome do usuário
+    </ResponseField>
+    <ResponseField name="email" type="string">
+      Email do usuário
+    </ResponseField>
+    <ResponseField name="role" type="string">
+      Função do usuário (USER, ADMIN)
+    </ResponseField>
+    <ResponseField name="createdAt" type="string">
+      Data de criação do usuário
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```json Request
+{
+  "name": "Novo Usuário",
+  "email": "novo@exemplo.com",
+  "password": "senha123"
+}
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "status": "success",
+  "data": {
+    "id": "clz8a9d3h0001qw1j3wyt7d8c",
+    "name": "Novo Usuário",
+    "email": "novo@exemplo.com",
+    "role": "USER",
+    "createdAt": "2023-08-15T14:22:35.120Z"
+  }
+}
+```
+</ResponseExample>
+
+## Verificar Token
+
+<EndpointDetails path="/auth/me" method="GET" />
+
+<Tip>Você precisa estar autenticado para usar este endpoint.</Tip>
+
+<ResponseField name="status" type="string">
+  Status da resposta
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Dados do usuário autenticado
+  <Expandable title="Toggle data">
+    <ResponseField name="id" type="string">
+      ID único do usuário
+    </ResponseField>
+    <ResponseField name="name" type="string">
+      Nome do usuário
+    </ResponseField>
+    <ResponseField name="email" type="string">
+      Email do usuário
+    </ResponseField>
+    <ResponseField name="role" type="string">
+      Função do usuário (USER, ADMIN)
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash Request
+curl --request GET \
+  --url http://localhost:3001/api/auth/me \
+  --header "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "status": "success",
+  "data": {
+    "id": "clz8a9d3h0000qw1j3wyt7d8b",
+    "name": "Usuário Exemplo",
+    "email": "usuario@exemplo.com",
+    "role": "USER"
+  }
+}
+```
+</ResponseExample>
+
+## Logout
+
+<EndpointDetails path="/auth/logout" method="POST" />
+
+<Tip>Você precisa estar autenticado para usar este endpoint.</Tip>
+
+<ResponseField name="status" type="string">
+  Status da resposta
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Mensagem de confirmação
+  <Expandable title="Toggle data">
+    <ResponseField name="message" type="string">
+      Mensagem de confirmação
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash Request
+curl --request POST \
+  --url http://localhost:3001/api/auth/logout \
+  --header "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "status": "success",
+  "data": {
+    "message": "Logout realizado com sucesso"
+  }
+}
+```
+</ResponseExample>
+
+## Teste público
+
+<EndpointDetails path="/auth/test-public" method="GET" />
+
+Este é um endpoint público para teste da API.
+
+<ResponseField name="message" type="string">
+  Mensagem de confirmação
+</ResponseField>
+
+<RequestExample>
+```bash Request
+curl --request GET \
+  --url http://localhost:3001/api/auth/test-public
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "message": "Esta é uma rota pública"
+}
+```
+</ResponseExample>
+
+## Teste protegido
+
+<EndpointDetails path="/auth/test-protected" method="GET" />
+
+<Tip>Este endpoint requer autenticação e função de ADMIN.</Tip>
+
+<ResponseField name="message" type="string">
+  Mensagem de confirmação
+</ResponseField>
+
+<RequestExample>
+```bash Request
+curl --request GET \
+  --url http://localhost:3001/api/auth/test-protected \
+  --header "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "message": "Esta é uma rota protegida apenas para administradores"
+}
+```
+</ResponseExample>

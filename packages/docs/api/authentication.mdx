@@ -1,0 +1,148 @@
+# Autenticação da API
+
+A API do TurboS implementa um sistema de autenticação robusto baseado em JWT (JSON Web Tokens) que protege os endpoints e fornece controle de acesso baseado em funções (RBAC).
+
+## Fluxo de Autenticação
+
+1. O usuário fornece credenciais (email/senha)
+2. O servidor valida as credenciais e gera um token JWT
+3. O cliente armazena o token e o envia em requisições subsequentes
+4. O servidor valida o token em cada requisição
+5. O usuário é identificado e autorizado conforme sua função
+
+## Módulo de Autenticação
+
+O `AuthModule` gerencia todos os aspectos relacionados à autenticação:
+
+```typescript
+@Module({
+  imports: [
+    JwtModule.register({
+      // Configuração JWT
+    }),
+    // Outros imports
+  ],
+  controllers: [AuthController],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    // Outros providers
+  ],
+  exports: [AuthService],
+})
+export class AuthModule {}
+```
+
+## Proteção de Rotas
+
+Por padrão, todas as rotas são protegidas pelo `JwtAuthGuard` global, exceto aquelas explicitamente marcadas com `@Public()`:
+
+```typescript
+// app.module.ts
+providers: [
+  {
+    provide: APP_GUARD,
+    useClass: JwtAuthGuard,
+  },
+  {
+    provide: APP_GUARD,
+    useClass: RolesGuard,
+  },
+],
+```
+
+Para permitir acesso público a uma rota:
+
+```typescript
+@Public()
+@Post('login')
+async login(@Body() loginDto: LoginDto) {
+  // Implementação
+}
+```
+
+## Controle de Acesso por Roles
+
+O sistema implementa RBAC (Role-Based Access Control) utilizando o decorator `@Roles()`:
+
+```typescript
+@Get('admin-dashboard')
+@Roles(UserRole.ADMIN, UserRole.MASTER)
+async getAdminDashboard() {
+  // Apenas administradores e masters podem acessar
+}
+```
+
+## Estratégias de Autenticação
+
+### JWT (JSON Web Tokens)
+
+O sistema utiliza JWT como principal mecanismo de autenticação:
+
+```typescript
+@Injectable()
+export class JwtStrategy extends PassportStrategy(Strategy) {
+  constructor() {
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
+      secretOrKeyProvider: async (request, rawJwtToken, done) => {
+        // Verificação com JWKS
+      },
+    });
+  }
+
+  async validate(payload: any) {
+    // Validação do token
+  }
+}
+```
+
+### JWKS (JSON Web Key Sets)
+
+O sistema gera e gerencia chaves assimétricas para assinatura de tokens JWT:
+
+- As chaves são armazenadas no banco de dados
+- Chaves públicas são expostas em endpoint público para validação
+- Rotação de chaves é suportada para segurança adicional
+
+## Endpoints Principais
+
+| Endpoint                          | Método | Descrição                    |
+| --------------------------------- | ------ | ---------------------------- |
+| `/api/auth/login`                 | POST   | Autenticação por credenciais |
+| `/api/auth/register`              | POST   | Registro de novos usuários   |
+| `/api/auth/refresh`               | POST   | Renovação de token JWT       |
+| `/api/auth/logout`                | POST   | Invalidação de sessão        |
+| `/api/auth/.well-known/jwks.json` | GET    | Chaves públicas JWKS         |
+
+## Exemplo de Uso
+
+### Login
+
+```typescript
+// Controller
+@Public()
+@Post('login')
+async login(@Body() loginDto: LoginDto) {
+  return this.authService.login(loginDto);
+}
+
+// Service
+async login(loginDto: LoginDto) {
+  const user = await this.validateUser(loginDto.email, loginDto.password);
+  if (!user) {
+    throw new UnauthorizedException('Credenciais inválidas');
+  }
+
+  return this.generateToken(user);
+}
+```
+
+## Considerações de Segurança
+
+- Tokens JWT têm curta duração por motivos de segurança
+- Senhas são hasheadas antes de armazenamento
+- Rate limiting protege contra força bruta
+- Verificação multifator disponível para proteção adicional
+- Bloqueio de conta após tentativas de login malsucedidas

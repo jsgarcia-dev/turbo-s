@@ -1,0 +1,164 @@
+---
+title: "Middleware de Autenticação"
+description: "Proteção de rotas com middleware no TurboS"
+---
+
+# Middleware de Autenticação
+
+O TurboS utiliza o middleware do Next.js em conjunto com o Better Auth para proteger rotas que requerem autenticação.
+
+## Como Funciona
+
+O middleware intercepta todas as requisições antes delas chegarem ao servidor de renderização do Next.js, permitindo verificar a autenticação. Este processo é extremamente eficiente, pois:
+
+1. É executado na edge, resultando em latência mínima
+2. Não requer carregamento do banco de dados para verificação simples
+3. Redireciona usuários não autenticados antes que qualquer renderização ocorra
+
+## Implementação
+
+O middleware principal está definido em `apps/web/middleware.ts`:
+
+```typescript
+import { NextRequest, NextResponse } from "next/server";
+import { getSessionCookie } from "better-auth/cookies";
+import { authRoutes, publicRoutes, DEFAULT_LOGIN_REDIRECT } from "@/lib/routes";
+
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Ignora rotas de recursos estáticos e API
+  const isPublicFile = /\.(.*)$/.test(pathname);
+  const isApiRoute = pathname.startsWith("/api");
+
+  if (isPublicFile || isApiRoute) {
+    return NextResponse.next();
+  }
+
+  // Verifica se é uma rota pública ou de autenticação
+  const isPublicRoute = publicRoutes.includes(pathname);
+  const isAuthRoute = authRoutes.includes(pathname);
+
+  // Verifica se o usuário possui um cookie de sessão válido
+  const sessionCookie = getSessionCookie(request, {
+    cookieName: "session_token",
+    cookiePrefix: "better-auth",
+    useSecureCookies: true,
+  });
+
+  // Se o usuário está autenticado e tenta acessar uma rota de auth
+  if (sessionCookie && isAuthRoute) {
+    return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, request.url));
+  }
+
+  // Se o usuário não está autenticado e tenta acessar uma rota privada
+  if (!sessionCookie && !isPublicRoute && !isAuthRoute) {
+    return NextResponse.redirect(new URL("/auth/sign-in", request.url));
+  }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+};
+```
+
+## Configuração de Rotas
+
+As rotas são categorizadas em:
+
+- **Rotas públicas**: Acessíveis por todos, definidas em `lib/routes.ts`
+- **Rotas de autenticação**: Para fluxos de autenticação, definidas em `lib/routes.ts`
+- **Rotas privadas**: Todas as outras rotas que requerem autenticação
+
+```typescript
+// Em lib/routes.ts
+export const publicRoutes = ["/", "/about", "/features"];
+
+export const authRoutes = [
+  "/auth/sign-in",
+  "/auth/sign-up",
+  "/auth/reset-password",
+  "/auth/forgot-password",
+];
+
+export const DEFAULT_LOGIN_REDIRECT = "/dashboard";
+```
+
+## Verificação de Sessão
+
+O middleware usa a função `getSessionCookie` do Better Auth para verificar a existência de um cookie de sessão válido. Esta verificação é leve e não requer acesso ao banco de dados.
+
+Se for necessário o objeto de sessão completo com dados do usuário, considere utilizar a versão middleware com runtime Node.js (para Next.js 15.2.0+):
+
+```typescript
+// Para Next.js 15.2.0+
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+
+export async function middleware(request: NextRequest) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session && !request.nextUrl.pathname.startsWith("/auth")) {
+    return NextResponse.redirect(new URL("/auth/sign-in", request.url));
+  }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  runtime: "nodejs",
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+};
+```
+
+## Autorização Baseada em Roles
+
+Além da autenticação básica, o middleware pode ser estendido para verificar as permissões do usuário:
+
+```typescript
+// Middleware com verificação de roles
+export async function middleware(request: NextRequest) {
+  // Verificação de autenticação existente...
+
+  // Obter sessão completa para verificar roles (Next.js 15.2.0+)
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  // Verificar role para rotas administrativas
+  if (session && request.nextUrl.pathname.startsWith("/admin")) {
+    if (session.user.role !== "ADMIN") {
+      return NextResponse.redirect(new URL("/unauthorized", request.url));
+    }
+  }
+
+  return NextResponse.next();
+}
+```
+
+## Considerações de Performance
+
+Para obter o melhor desempenho possível:
+
+1. Utilize `getSessionCookie` sempre que possível (não requer acesso ao banco de dados)
+2. Apenas carregue a sessão completa quando realmente precisar verificar dados específicos do usuário
+3. Defina corretamente o `matcher` para que o middleware não execute em rotas desnecessárias
+4. Considere implementar cache para reduzir a carga do banco de dados
+
+## Depuração
+
+Para depurar problemas com o middleware, você pode adicionar logs temporários:
+
+```typescript
+console.log("Cookie detectado:", !!sessionCookie);
+console.log("Rota:", pathname);
+console.log("É rota pública:", isPublicRoute);
+console.log("É rota de auth:", isAuthRoute);
+```
+
+Estes logs aparecerão no console do servidor durante o desenvolvimento.

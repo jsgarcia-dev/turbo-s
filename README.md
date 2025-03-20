@@ -19,6 +19,7 @@ This Turborepo includes the following packages/apps:
 - `docs`: a [Next.js](https://nextjs.org/) app
 - `web`: another [Next.js](https://nextjs.org/) app
 - `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
+- `@repo/docs`: a [Mintlify](https://mintlify.com/) documentation site
 - `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
@@ -71,6 +72,41 @@ Next, you can link your Turborepo to your Remote Cache by running the following 
 ```
 npx turbo link
 ```
+
+## Documentação
+
+O projeto inclui uma documentação completa usando o [Mintlify](https://mintlify.com/), que abrange:
+
+- Estrutura da aplicação
+- Componentes UI
+- Sistema de autenticação
+- API
+
+### Como usar a documentação
+
+Para iniciar o servidor de documentação local:
+
+```bash
+pnpm docs
+```
+
+O servidor será executado em `http://localhost:3000` (ou outra porta disponível).
+
+Para construir a documentação para produção:
+
+```bash
+pnpm docs:build
+```
+
+### Removendo a documentação
+
+Se você não precisar da documentação, pode removê-la com:
+
+```bash
+pnpm remove-docs
+```
+
+⚠️ **Atenção**: Esta ação é irreversível e removerá todos os arquivos de documentação e dependências relacionadas.
 
 ## Useful Links
 

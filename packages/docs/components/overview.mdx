@@ -1,0 +1,105 @@
+---
+title: "Visão Geral dos Componentes"
+description: "Componentes da UI disponíveis no TurboS"
+---
+
+# Componentes da UI
+
+O TurboS utiliza uma biblioteca de componentes moderna e acessível baseada em shadcn/ui, que é construída sobre o Radix UI e estilizada com Tailwind CSS.
+
+## Princípios de Design
+
+Nossos componentes seguem estes princípios:
+
+- **Acessibilidade**: Todos os componentes são acessíveis e seguem as diretrizes WCAG.
+- **Reutilização**: Componentes projetados para serem reutilizados e combinados.
+- **Customização**: Altamente customizáveis com Tailwind CSS.
+- **Responsividade**: Funcionam bem em todos os tamanhos de tela.
+
+## Estrutura de Componentes
+
+Os componentes estão organizados em:
+
+- **Primitivos**: Blocos básicos de construção (Button, Input, etc.)
+- **Compostos**: Combinações de primitivos (Form, Dialog, etc.)
+- **Patterns**: Padrões de UI recorrentes (Cards, Lists, etc.)
+- **Layouts**: Componentes para estruturar páginas (Container, Grid, etc.)
+
+## Lista de Componentes
+
+### Primitivos
+
+- **Accordion**: Componente expansível para exibir conteúdo
+- **Alert**: Feedback visual para o usuário
+- **Avatar**: Representação visual do usuário
+- **Badge**: Etiqueta para destacar status ou categorias
+- **Button**: Botão com variantes
+- **Checkbox**: Caixa de seleção
+- **Input**: Campo de entrada de texto
+- **Radio Group**: Grupo de botões de opção
+- **Select**: Menu suspenso para seleção
+- **Switch**: Alternador para ligar/desligar
+- **Textarea**: Área de texto multilinha
+- **Tooltip**: Dica contextual
+
+### Compostos
+
+- **Alert Dialog**: Diálogo de alerta para confirmações
+- **Command**: Paleta de comandos inspirada em Spotlight
+- **Context Menu**: Menu de contexto acionado com clique direito
+- **Dialog**: Janela modal para conteúdo focado
+- **Dropdown Menu**: Menu suspenso para opções
+- **Popover**: Conteúdo flutuante ancorado a um elemento
+- **Tabs**: Navegação por abas
+
+### Patterns
+
+- **Card**: Contêiner para conteúdo relacionado
+- **Data Table**: Tabela avançada para visualização de dados
+- **Form**: Formulários validados com React Hook Form e Zod
+- **Calendar**: Componente de calendário para seleção de datas
+- **Toast**: Notificações temporárias
+
+### Layouts
+
+- **AspectRatio**: Mantém uma proporção específica
+- **Container**: Contêiner responsivo com largura máxima
+- **Separator**: Linha divisória
+- **ScrollArea**: Área de rolagem personalizada
+
+## Uso de Componentes
+
+Aqui está um exemplo de como usar o componente Button:
+
+```tsx
+import { Button } from "@/components/ui/button";
+
+export default function Example() {
+  return (
+    <div className="space-x-2">
+      <Button variant="default">Default</Button>
+      <Button variant="destructive">Destructive</Button>
+      <Button variant="outline">Outline</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="link">Link</Button>
+    </div>
+  );
+}
+```
+
+## Customização de Temas
+
+Os componentes suportam modo claro e escuro, e podem ser personalizados através do arquivo `app/globals.css` e do provedor `ThemeProvider`.
+
+## Acessibilidade
+
+Todos os componentes são construídos com acessibilidade em mente:
+
+- Suporte completo para navegação por teclado
+- Propriedades ARIA apropriadas
+- Contraste adequado para legibilidade
+- Compatibilidade com leitores de tela
+
+## Contribuindo
+
+Se quiser contribuir com novos componentes, consulte nosso [guia de desenvolvimento](/development) para saber como configurar o ambiente e seguir nossas diretrizes de código.

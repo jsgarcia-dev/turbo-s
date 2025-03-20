@@ -1,0 +1,295 @@
+---
+title: "Chat"
+openapi: "POST /chat/topic"
+operationId: "createChatTopic"
+description: "Criação e gerenciamento de tópicos de chat"
+---
+
+# Chat
+
+Os endpoints de chat permitem gerenciar tópicos de conversação e mensagens para interações com IA.
+
+## Criar um tópico de chat
+
+<Tip>Você precisa estar autenticado para usar este endpoint.</Tip>
+
+<ParamField body="title" type="string">
+  Título opcional para o tópico de chat
+</ParamField>
+
+<ResponseField name="topicId" type="string">
+  O ID único do tópico criado
+</ResponseField>
+
+<RequestExample>
+```json Request
+{
+  "title": "Conversa sobre desenvolvimento web"
+}
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "topicId": "strings"
+}
+```
+</ResponseExample>
+
+## Obter tópicos do usuário
+
+<EndpointDetails path="/chat/topics" method="GET" />
+
+<Tip>Você precisa estar autenticado para usar este endpoint.</Tip>
+
+<ParamField query="page" type="integer" default="1">
+  Página para paginação
+</ParamField>
+
+<ParamField query="limit" type="integer" default="10">
+  Número de itens por página
+</ParamField>
+
+<ResponseField name="status" type="string">
+  Status da resposta
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Dados da resposta
+  <Expandable title="Toggle data">
+    <ResponseField name="topics" type="array">
+      Lista de tópicos
+      <Expandable title="Toggle topic">
+        <ResponseField name="id" type="string">
+          ID único do tópico
+        </ResponseField>
+        <ResponseField name="title" type="string">
+          Título do tópico
+        </ResponseField>
+        <ResponseField name="createdAt" type="string">
+          Data de criação do tópico
+        </ResponseField>
+        <ResponseField name="updatedAt" type="string">
+          Data de atualização do tópico
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="pagination" type="object">
+      Informações de paginação
+      <Expandable title="Toggle pagination">
+        <ResponseField name="total" type="integer">
+          Total de itens
+        </ResponseField>
+        <ResponseField name="pages" type="integer">
+          Total de páginas
+        </ResponseField>
+        <ResponseField name="page" type="integer">
+          Página atual
+        </ResponseField>
+        <ResponseField name="limit" type="integer">
+          Número de itens por página
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash Request
+curl --request GET \
+  --url "http://localhost:3001/api/chat/topics?page=1&limit=10" \
+  --header "Authorization: Bearer <token>"
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "status": "success",
+  "data": {
+    "topics": [
+      {
+        "id": "clz8a9d3h0000qw1j3wyt7d8b",
+        "title": "Conversa sobre desenvolvimento web",
+        "createdAt": "2023-08-15T14:22:35.120Z",
+        "updatedAt": "2023-08-15T14:22:35.120Z"
+      }
+    ],
+    "pagination": {
+      "total": 1,
+      "pages": 1,
+      "page": 1,
+      "limit": 10
+    }
+  }
+}
+```
+</ResponseExample>
+
+## Enviar mensagem para um tópico
+
+<EndpointDetails path="/chat/topics/:topicId/messages" method="POST" />
+
+<Tip>Você precisa estar autenticado para usar este endpoint.</Tip>
+
+<ParamField path="topicId" type="string" required>
+  ID do tópico para enviar a mensagem
+</ParamField>
+
+<ParamField body="content" type="string" required>
+  Conteúdo da mensagem
+</ParamField>
+
+<ResponseField name="status" type="string">
+  Status da resposta
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Dados da mensagem criada
+  <Expandable title="Toggle data">
+    <ResponseField name="id" type="string">
+      ID único da mensagem
+    </ResponseField>
+    <ResponseField name="content" type="string">
+      Conteúdo da mensagem
+    </ResponseField>
+    <ResponseField name="role" type="string">
+      Papel do remetente (user/assistant)
+    </ResponseField>
+    <ResponseField name="topicId" type="string">
+      ID do tópico relacionado
+    </ResponseField>
+    <ResponseField name="createdAt" type="string">
+      Data de criação da mensagem
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```json Request
+{
+  "content": "Como posso usar React com TypeScript?"
+}
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "status": "success",
+  "data": {
+    "id": "clz8a9d3h0001qw1j3wyt7d8c",
+    "content": "Como posso usar React com TypeScript?",
+    "role": "user",
+    "topicId": "clz8a9d3h0000qw1j3wyt7d8b",
+    "createdAt": "2023-08-15T14:23:35.120Z"
+  }
+}
+```
+</ResponseExample>
+
+## Obter mensagens de um tópico
+
+<EndpointDetails path="/chat/topics/:topicId/messages" method="GET" />
+
+<Tip>Você precisa estar autenticado para usar este endpoint.</Tip>
+
+<ParamField path="topicId" type="string" required>
+  ID do tópico para obter as mensagens
+</ParamField>
+
+<ParamField query="page" type="integer" default="1">
+  Página para paginação
+</ParamField>
+
+<ParamField query="limit" type="integer" default="20">
+  Número de itens por página
+</ParamField>
+
+<ResponseField name="status" type="string">
+  Status da resposta
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Dados da resposta
+  <Expandable title="Toggle data">
+    <ResponseField name="messages" type="array">
+      Lista de mensagens
+      <Expandable title="Toggle message">
+        <ResponseField name="id" type="string">
+          ID único da mensagem
+        </ResponseField>
+        <ResponseField name="content" type="string">
+          Conteúdo da mensagem
+        </ResponseField>
+        <ResponseField name="role" type="string">
+          Papel do remetente (user/assistant)
+        </ResponseField>
+        <ResponseField name="topicId" type="string">
+          ID do tópico relacionado
+        </ResponseField>
+        <ResponseField name="createdAt" type="string">
+          Data de criação da mensagem
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="pagination" type="object">
+      Informações de paginação
+      <Expandable title="Toggle pagination">
+        <ResponseField name="total" type="integer">
+          Total de itens
+        </ResponseField>
+        <ResponseField name="pages" type="integer">
+          Total de páginas
+        </ResponseField>
+        <ResponseField name="page" type="integer">
+          Página atual
+        </ResponseField>
+        <ResponseField name="limit" type="integer">
+          Número de itens por página
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash Request
+curl --request GET \
+  --url "http://localhost:3001/api/chat/topics/clz8a9d3h0000qw1j3wyt7d8b/messages?page=1&limit=20" \
+  --header "Authorization: Bearer <token>"
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "status": "success",
+  "data": {
+    "messages": [
+      {
+        "id": "clz8a9d3h0001qw1j3wyt7d8c",
+        "content": "Como posso usar React com TypeScript?",
+        "role": "user",
+        "topicId": "clz8a9d3h0000qw1j3wyt7d8b",
+        "createdAt": "2023-08-15T14:23:35.120Z"
+      },
+      {
+        "id": "clz8a9d3h0002qw1j3wyt7d8d",
+        "content": "Para usar React com TypeScript, você precisa primeiro configurar um ambiente...",
+        "role": "assistant",
+        "topicId": "clz8a9d3h0000qw1j3wyt7d8b",
+        "createdAt": "2023-08-15T14:23:40.120Z"
+      }
+    ],
+    "pagination": {
+      "total": 2,
+      "pages": 1,
+      "page": 1,
+      "limit": 20
+    }
+  }
+}
+```
+</ResponseExample>

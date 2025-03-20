@@ -1,0 +1,195 @@
+---
+title: "Usuários"
+openapi: "GET /users"
+operationId: "findAllUsers"
+description: "Gerenciamento de usuários no sistema"
+---
+
+# Usuários
+
+Os endpoints de usuário permitem gerenciar dados dos usuários no sistema.
+
+## Listar Usuários
+
+<Tip>Este endpoint requer autenticação.</Tip>
+
+<ResponseField name="users" type="array">
+  Lista de usuários
+  <Expandable title="Toggle user">
+    <ResponseField name="id" type="string">
+      ID único do usuário
+    </ResponseField>
+    <ResponseField name="name" type="string">
+      Nome do usuário
+    </ResponseField>
+    <ResponseField name="email" type="string">
+      Email do usuário
+    </ResponseField>
+    <ResponseField name="role" type="string">
+      Função do usuário (USER, ADMIN)
+    </ResponseField>
+    <ResponseField name="createdAt" type="string">
+      Data de criação
+    </ResponseField>
+    <ResponseField name="updatedAt" type="string">
+      Data de atualização
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+  ```bash Request curl --request GET \ --url http://localhost:3001/api/users \
+  --header "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." ```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+[
+  {
+    "id": "clz8a9d3h0000qw1j3wyt7d8b",
+    "name": "Usuário Exemplo",
+    "email": "usuario@exemplo.com",
+    "role": "USER",
+    "createdAt": "2023-08-15T14:22:35.120Z",
+    "updatedAt": "2023-08-15T14:22:35.120Z"
+  },
+  {
+    "id": "clz8a9d3h0001qw1j3wyt7d8c",
+    "name": "Outro Usuário",
+    "email": "outro@exemplo.com",
+    "role": "ADMIN",
+    "createdAt": "2023-08-14T18:22:35.340Z",
+    "updatedAt": "2023-08-14T18:22:35.340Z"
+  }
+]
+```
+</ResponseExample>
+
+## Obter Usuário por ID
+
+<EndpointDetails path="/users/:id" method="GET" />
+
+<Tip>Este endpoint requer autenticação.</Tip>
+
+<ParamField path="id" type="string" required>
+  ID do usuário a ser consultado
+</ParamField>
+
+<ResponseField name="status" type="string">
+  Status da resposta
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Dados do usuário
+</ResponseField>
+
+<RequestExample>
+  ```bash Request curl --request GET \ --url
+  http://localhost:3001/api/users/clz8a9d3h0000qw1j3wyt7d8b \ --header
+  "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." ```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "status": "success",
+  "data": {
+    "id": "clz8a9d3h0000qw1j3wyt7d8b",
+    "name": "Usuário Exemplo",
+    "email": "usuario@exemplo.com",
+    "role": "USER",
+    "createdAt": "2023-08-15T14:22:35.120Z"
+  }
+}
+```
+</ResponseExample>
+
+## Atualizar Usuário
+
+<EndpointDetails path="/users/:id" method="PATCH" />
+
+<Tip>Este endpoint requer autenticação.</Tip>
+
+<ParamField path="id" type="string" required>
+  ID do usuário a ser atualizado
+</ParamField>
+
+<ParamField body="name" type="string">
+  Nome do usuário
+</ParamField>
+
+<ParamField body="email" type="string">
+  Email do usuário
+</ParamField>
+
+<ResponseField name="status" type="string">
+  Status da resposta
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Dados do usuário atualizado
+</ResponseField>
+
+<RequestExample>
+```bash Request
+curl --request PATCH \
+  --url http://localhost:3001/api/users/clz8a9d3h0000qw1j3wyt7d8b \
+  --header "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  --header "Content-Type: application/json" \
+  --data '{
+    "name": "Nome Atualizado",
+    "email": "email.atualizado@exemplo.com"
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "status": "success",
+  "data": {
+    "id": "clz8a9d3h0000qw1j3wyt7d8b",
+    "name": "Nome Atualizado",
+    "email": "email.atualizado@exemplo.com",
+    "role": "USER",
+    "createdAt": "2023-08-15T14:22:35.120Z",
+    "updatedAt": "2023-08-16T10:15:22.730Z"
+  }
+}
+```
+</ResponseExample>
+
+## Excluir Usuário
+
+<EndpointDetails path="/users/:id" method="DELETE" />
+
+<Tip>Este endpoint requer autenticação.</Tip>
+
+<ParamField path="id" type="string" required>
+  ID do usuário a ser excluído
+</ParamField>
+
+<ResponseField name="status" type="string">
+  Status da resposta
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Mensagem de confirmação
+</ResponseField>
+
+<RequestExample>
+  ```bash Request curl --request DELETE \ --url
+  http://localhost:3001/api/users/clz8a9d3h0000qw1j3wyt7d8b \ --header
+  "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." ```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "status": "success",
+  "data": {
+    "message": "Usuário excluído com sucesso"
+  }
+}
+```
+</ResponseExample>

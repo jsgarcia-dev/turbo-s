@@ -1,0 +1,122 @@
+# API NestJS
+
+A API TurboS é construída com [NestJS](https://nestjs.com/), proporcionando uma base robusta, escalável e bem estruturada para o backend da aplicação.
+
+## Arquitetura
+
+A API segue a arquitetura modular do NestJS, organizando o código em:
+
+- **Módulos**: Unidades que encapsulam funcionalidades relacionadas
+- **Controladores**: Tratam as requisições HTTP e delegam processos
+- **Serviços**: Contêm a lógica de negócios
+- **Guardas**: Implementam autenticação e autorização
+- **Interceptores**: Processam requisições/respostas
+- **Filtros**: Tratam exceções globalmente
+
+## Módulos Principais
+
+| Módulo           | Descrição                  |
+| ---------------- | -------------------------- |
+| 🧩 `UsersModule` | Gerenciamento de usuários  |
+| 🔐 `AuthModule`  | Autenticação e autorização |
+| 📧 `MailModule`  | Envio de emails            |
+
+## Configuração do Servidor
+
+O servidor é configurado no arquivo `main.ts` com as seguintes características:
+
+- Prefixo global para todas as rotas (`/api`)
+- Documentação Swagger em `/api/docs`
+- Proteção CORS, Helmet e compressão
+- Rate limiting (throttling)
+- Validação automática de dados
+- Tratamento global de exceções
+- Logging estruturado com Winston
+
+## Variáveis de Ambiente
+
+A API utiliza diversas variáveis de ambiente para configuração:
+
+```bash
+# Servidor
+PORT=3001
+NODE_ENV=development
+
+# Segurança
+CORS_ORIGIN=http://localhost:3000
+
+# Rotas
+API_PREFIX=api
+SWAGGER_PATH=docs
+
+# Rate Limiting
+THROTTLE_TTL=60000
+THROTTLE_LIMIT=100
+
+# Email
+MAIL_HOST=
+MAIL_PORT=
+MAIL_USER=
+MAIL_PASS=
+MAIL_FROM=
+
+# Storage (Supabase)
+SUPABASE_URL=""
+SUPABASE_STORAGE_URL=""
+SUPABASE_S3_ACCESS_KEY=""
+SUPABASE_S3_SECRET_KEY=""
+SUPABASE_BUCKET=""
+```
+
+## Autenticação
+
+A API implementa autenticação baseada em JWT (JSON Web Tokens) com:
+
+- Proteção de rotas por padrão
+- Suporte a JWKS (JSON Web Key Sets)
+- Controle de acesso baseado em roles (RBAC)
+- Autenticação stateless
+
+## Documentação Swagger
+
+A documentação da API é gerada automaticamente usando Swagger/OpenAPI:
+
+- Disponível em `http://localhost:3001/api/docs`
+- Interface interativa para testar endpoints
+- Documentação completa de schemas, parâmetros e respostas
+
+## Integração com o Database
+
+A API se integra com o pacote `@repo/database` para acesso ao banco de dados:
+
+```typescript
+import { prisma } from "@repo/database";
+
+// Exemplo de uso em um serviço
+@Injectable()
+export class UsersService {
+  async findById(id: string) {
+    return prisma.user.findUnique({
+      where: { id },
+    });
+  }
+}
+```
+
+## Logging
+
+A API utiliza Winston para logging estruturado:
+
+- Logs em formatos diferentes por ambiente
+- Informações detalhadas em desenvolvimento
+- Logs mais concisos em produção
+
+## Considerações de Segurança
+
+A API implementa diversas medidas de segurança:
+
+- Proteção contra DDoS via rate limiting
+- Headers seguros com Helmet
+- Validação e sanitização de input
+- Tratamento seguro de exceções
+- Autenticação e autorização robustas

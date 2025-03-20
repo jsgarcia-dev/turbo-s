@@ -1,0 +1,164 @@
+---
+title: "Visão Geral da Autenticação"
+description: "Entenda como funciona a autenticação no TurboS"
+---
+
+# Visão Geral da Autenticação
+
+O TurboS utiliza o Better Auth para fornecer uma solução de autenticação robusta e flexível.
+
+## Arquitetura de Autenticação
+
+A autenticação no TurboS é baseada em tokens JWT armazenados em cookies, com suporte para múltiplos provedores de autenticação. O sistema implementa:
+
+- Autenticação por email/senha
+- Login social (Google, GitHub, etc.)
+- Verificação de email
+- Recuperação de senha
+- Proteção de rotas com middleware
+
+## Fluxo de Autenticação
+
+### Registro de Usuário
+
+1. Usuário preenche o formulário de registro
+2. Server Action valida os dados e cria o usuário
+3. Email de verificação é enviado (opcional)
+4. Usuário é redirecionado para página de confirmação
+
+### Login de Usuário
+
+1. Usuário preenche o formulário de login
+2. Server Action autentica o usuário
+3. Token JWT é gerado e armazenado em cookie
+4. Usuário é redirecionado para o dashboard
+
+### Verificação de Sessão
+
+1. Middleware verifica o cookie de sessão em rotas protegidas
+2. Se válido, permite acesso
+3. Se inválido ou expirado, redireciona para página de login
+
+## Configuração da Autenticação
+
+A configuração principal da autenticação está em `lib/auth.ts`:
+
+```typescript
+import { betterAuth } from "better-auth";
+import { prisma } from "@repo/database";
+
+export const auth = betterAuth({
+  adapter: {
+    type: "prisma",
+    prisma,
+  },
+  session: {
+    strategy: "jwt",
+  },
+  providers: [
+    // Configuração dos provedores
+  ],
+  // Outras configurações...
+});
+```
+
+## Rotas de Autenticação
+
+O TurboS expõe endpoints de autenticação através da rota `/api/auth/[...all]`, que são gerenciados pelo Better Auth:
+
+- `/api/auth/sign-in` - Login
+- `/api/auth/sign-up` - Registro
+- `/api/auth/sign-out` - Logout
+- `/api/auth/reset-password` - Recuperação de senha
+- `/api/auth/verify` - Verificação de email
+
+## Provedores de Autenticação
+
+### Autenticação por Email/Senha
+
+Para o login tradicional por email e senha:
+
+```typescript
+// Em lib/auth.ts
+export const auth = betterAuth({
+  // ...
+  email: {
+    enabled: true,
+    normalizeEmail: true, // Normaliza emails
+    verificationType: "code", // Ou "link"
+  },
+  password: {
+    minLength: 8,
+    preventPasswordReuse: true,
+  },
+  // ...
+});
+```
+
+### Provedores OAuth
+
+O TurboS suporta múltiplos provedores sociais:
+
+```typescript
+// Em lib/auth.ts
+export const auth = betterAuth({
+  // ...
+  providers: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    },
+    github: {
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    },
+    // Outros provedores...
+  },
+  // ...
+});
+```
+
+## Sessão do Usuário
+
+O TurboS utiliza o Client API do Better Auth para acessar a sessão do usuário no frontend:
+
+```typescript
+// Em qualquer componente React
+import { useSession } from "@/lib/auth-client";
+
+export function ProfileComponent() {
+  const { data: session, isPending } = useSession();
+
+  if (isPending) {
+    return <div>Carregando...</div>;
+  }
+
+  if (!session) {
+    return <div>Não autenticado</div>;
+  }
+
+  return <div>Olá, {session.user.name}!</div>;
+}
+```
+
+E no backend, usando Server Actions:
+
+```typescript
+// Em uma Server Action
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+
+export async function getUserData() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    return null;
+  }
+
+  return session.user;
+}
+```
+
+Para mais detalhes sobre métodos específicos de autenticação, consulte a seção [Métodos de Autenticação](/authentication/methods).

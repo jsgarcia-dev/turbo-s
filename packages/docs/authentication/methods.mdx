@@ -1,0 +1,358 @@
+---
+title: "Métodos de Autenticação"
+description: "Métodos de autenticação disponíveis no TurboS"
+---
+
+# Métodos de Autenticação
+
+O TurboS oferece diversos métodos de autenticação para atender diferentes necessidades de segurança e experiência do usuário.
+
+## Email e Senha
+
+O método tradicional de autenticação com email e senha é implementado com validações robustas e armazenamento seguro de senhas.
+
+### Registro
+
+```tsx
+// Exemplo de uso no frontend
+import { useRouter } from "next/navigation";
+import { signUp } from "@/actions/auth/sign-up";
+
+export function RegisterForm() {
+  const router = useRouter();
+
+  async function onSubmit(formData: FormData) {
+    const result = await signUp(formData);
+
+    if (result.success) {
+      router.push("/auth/verify");
+    }
+  }
+
+  return (
+    <form action={onSubmit}>
+      <input name="name" placeholder="Nome completo" required />
+      <input name="email" type="email" placeholder="Email" required />
+      <input name="password" type="password" placeholder="Senha" required />
+      <button type="submit">Criar conta</button>
+    </form>
+  );
+}
+```
+
+A Server Action de registro:
+
+```typescript
+// Em actions/auth/sign-up.ts
+"use server";
+
+import { auth } from "@/lib/auth";
+
+export async function signUp(formData: FormData) {
+  const name = formData.get("name") as string;
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+
+  try {
+    await auth.api.signUpEmail({
+      body: {
+        name,
+        email,
+        password,
+      },
+    });
+
+    return { success: true };
+  } catch (error) {
+    return { success: false, error };
+  }
+}
+```
+
+### Login
+
+```tsx
+// Exemplo de uso no frontend
+import { useRouter } from "next/navigation";
+import { signIn } from "@/actions/auth/sign-in";
+
+export function LoginForm() {
+  const router = useRouter();
+
+  async function onSubmit(formData: FormData) {
+    const result = await signIn(formData);
+
+    if (result.success) {
+      router.push("/dashboard");
+    }
+  }
+
+  return (
+    <form action={onSubmit}>
+      <input name="email" type="email" placeholder="Email" required />
+      <input name="password" type="password" placeholder="Senha" required />
+      <button type="submit">Entrar</button>
+    </form>
+  );
+}
+```
+
+A Server Action de login:
+
+```typescript
+// Em actions/auth/sign-in.ts
+"use server";
+
+import { auth } from "@/lib/auth";
+
+export async function signIn(formData: FormData) {
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+
+  try {
+    await auth.api.signInEmail({
+      body: {
+        email,
+        password,
+      },
+    });
+
+    return { success: true };
+  } catch (error) {
+    return { success: false, error };
+  }
+}
+```
+
+## OAuth (Login Social)
+
+O TurboS suporta autenticação via provedores OAuth como Google, GitHub, etc.
+
+### Configuração
+
+Para utilizar o login social, é necessário configurar os provedores no arquivo `lib/auth.ts`:
+
+```typescript
+// Em lib/auth.ts
+export const auth = betterAuth({
+  // ...
+  providers: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    },
+    github: {
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    },
+  },
+  // ...
+});
+```
+
+### Implementação no Frontend
+
+```tsx
+// Componente de login social
+import { signInSocial } from "@/actions/auth/sign-in-social";
+
+export function SocialLogin() {
+  return (
+    <div>
+      <button onClick={() => signInSocial("google")} className="btn-google">
+        Continuar com Google
+      </button>
+
+      <button onClick={() => signInSocial("github")} className="btn-github">
+        Continuar com GitHub
+      </button>
+    </div>
+  );
+}
+```
+
+A Server Action para login social:
+
+```typescript
+// Em actions/auth/sign-in-social.ts
+"use server";
+
+import { auth } from "@/lib/auth";
+
+export async function signInSocial(provider: string) {
+  try {
+    const authUrl = await auth.api.socialAuth({
+      body: {
+        provider,
+        callbackURL: `${process.env.BASE_URL}/auth/callback`,
+      },
+    });
+
+    return { success: true, url: authUrl };
+  } catch (error) {
+    return { success: false, error };
+  }
+}
+```
+
+## Verificação de Email
+
+O TurboS inclui funcionalidade para verificação de email dos usuários.
+
+### Envio de Código de Verificação
+
+```typescript
+// Em actions/auth/send-verification.ts
+"use server";
+
+import { auth } from "@/lib/auth";
+
+export async function sendVerification(email: string) {
+  try {
+    await auth.api.sendVerification({
+      body: {
+        email,
+        type: "email",
+      },
+    });
+
+    return { success: true };
+  } catch (error) {
+    return { success: false, error };
+  }
+}
+```
+
+### Verificação de Código
+
+```typescript
+// Em actions/auth/verify-email.ts
+"use server";
+
+import { auth } from "@/lib/auth";
+
+export async function verifyEmail(code: string, email: string) {
+  try {
+    await auth.api.verifyEmail({
+      body: {
+        code,
+        email,
+      },
+    });
+
+    return { success: true };
+  } catch (error) {
+    return { success: false, error };
+  }
+}
+```
+
+## Recuperação de Senha
+
+O TurboS oferece um fluxo completo de recuperação de senha.
+
+### Solicitação de Redefinição
+
+```typescript
+// Em actions/auth/forgot-password.ts
+"use server";
+
+import { auth } from "@/lib/auth";
+
+export async function forgotPassword(email: string) {
+  try {
+    await auth.api.forgotPassword({
+      body: {
+        email,
+        callbackURL: `${process.env.BASE_URL}/auth/reset-password`,
+      },
+    });
+
+    return { success: true };
+  } catch (error) {
+    return { success: false, error };
+  }
+}
+```
+
+### Redefinição de Senha
+
+```typescript
+// Em actions/auth/reset-password.ts
+"use server";
+
+import { auth } from "@/lib/auth";
+
+export async function resetPassword(token: string, password: string) {
+  try {
+    await auth.api.resetPassword({
+      body: {
+        token,
+        password,
+      },
+    });
+
+    return { success: true };
+  } catch (error) {
+    return { success: false, error };
+  }
+}
+```
+
+## Logout
+
+```typescript
+// Em actions/auth/sign-out.ts
+"use server";
+
+import { auth } from "@/lib/auth";
+import { cookies } from "next/headers";
+
+export async function signOut() {
+  try {
+    await auth.api.signOut({
+      headers: { cookie: cookies().toString() },
+    });
+
+    return { success: true };
+  } catch (error) {
+    return { success: false, error };
+  }
+}
+```
+
+## Vincular Contas
+
+O TurboS permite que usuários vinculem múltiplos métodos de autenticação à mesma conta.
+
+```typescript
+// Em actions/auth/link-social.ts
+"use server";
+
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+
+export async function linkSocial(provider: string) {
+  try {
+    const result = await auth.api.linkSocial({
+      body: {
+        provider,
+        callbackURL: `${process.env.BASE_URL}/settings/accounts`,
+      },
+      headers: await headers(),
+    });
+
+    return { success: true, url: result.url };
+  } catch (error) {
+    return { success: false, error };
+  }
+}
+```
+
+## Considerações de Segurança
+
+- As senhas são hasheadas usando algoritmos seguros (bcrypt)
+- Proteção contra CSRF implementada em todos os endpoints
+- Proteção contra ataques de força bruta com rate limiting
+- Senhas são validadas para garantir força mínima
+- Verificação de email ajuda a prevenir abuso

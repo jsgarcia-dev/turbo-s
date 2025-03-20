@@ -1,0 +1,158 @@
+# OpenAPI Specification
+
+Esta é a especificação OpenAPI completa da API REST do TurboS. Você pode usar esta especificação para gerar clientes, testar a API ou entender sua estrutura completa.
+
+## Integração com Ferramentas
+
+Você pode baixar nossa especificação OpenAPI e importá-la em diversas ferramentas:
+
+- **Postman**: Para testar endpoints manualmente
+- **Swagger UI**: Para visualizar e testar a API
+- **Insomnia**: Para testes e desenvolvimento
+- **Clientes Gerados**: Para integração com diversas linguagens
+
+## Endpoints Documentados
+
+Nossa especificação OpenAPI inclui todos os endpoints disponíveis na API:
+
+### Autenticação
+
+- `POST /auth/login` - Login de usuário
+- `POST /auth/register` - Registro de usuário
+- `GET /auth/me` - Verificar token e obter usuário atual
+- `POST /auth/logout` - Logout
+
+### Usuários
+
+- `GET /users` - Listar usuários
+- `GET /users/{id}` - Obter usuário por ID
+- `PATCH /users/{id}` - Atualizar usuário
+- `DELETE /users/{id}` - Excluir usuário
+
+## Testando a API
+
+Para testar os endpoints da API, recomendamos as seguintes abordagens:
+
+1. **Usando a documentação interativa**: Em cada seção de endpoints você encontrará exemplos de requisições e respostas, junto com snippets de código para diferentes linguagens.
+
+2. **Usando o Swagger UI**: Você pode visualizar e testar a API completa copiando o conteúdo do arquivo OpenAPI abaixo para o [Swagger Editor](https://editor.swagger.io/).
+
+3. **Usando Postman**: Importe a coleção para o Postman usando o arquivo OpenAPI abaixo.
+
+## Arquivo OpenAPI
+
+Para referência, você pode visualizar aqui a especificação OpenAPI completa:
+
+```json
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "TurboS API",
+    "description": "API RESTful do TurboS",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Suporte TurboS",
+      "email": "suporte@turbos.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3001/api",
+      "description": "Servidor de desenvolvimento"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["USER", "ADMIN", "MASTER"]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/auth/login": {},
+    "/auth/register": {},
+    "/auth/me": {},
+    "/auth/logout": {},
+    "/users": {},
+    "/users/{id}": {}
+  }
+}
+```
+
+Para o arquivo completo, consulte o [arquivo OpenAPI completo](/api-reference/openapi.json) (que pode ser baixado).
+
+## Testando a API com Swagger UI
+
+Para uma experiência interativa de teste da API, você pode usar o Swagger UI integrado:
+
+1. Inicie o servidor da API: `cd apps/api && npm run dev`
+2. Acesse a documentação Swagger em: [http://localhost:3001/api/docs](http://localhost:3001/api/docs)
+
+A interface do Swagger permite:
+
+- Explorar todos os endpoints disponíveis
+- Testar requisições diretamente no navegador
+- Autenticar-se para testar endpoints protegidos
+- Ver exemplos de requisição e resposta
+
+### Como autenticar no Swagger UI:
+
+1. Acesse o endpoint `/auth/login` no Swagger
+2. Preencha o corpo da requisição com suas credenciais
+3. Execute a requisição para obter o token JWT
+4. Clique no botão "Authorize" no topo da página
+5. Insira o token no formato: `Bearer seu_token_aqui`
+6. Clique em "Authorize" para salvar
+7. Agora você pode testar todos os endpoints protegidos
+
+## Especificação OpenAPI
+
+A especificação OpenAPI completa em formato JSON está disponível em:
+[http://localhost:3001/api/docs-json](http://localhost:3001/api/docs-json)
+
+Você pode importar este JSON em ferramentas como Postman ou Insomnia para gerar automaticamente uma coleção com todos os endpoints.
+
+## Usando o Swagger com Postman
+
+1. Acesse o Postman e clique em "Import"
+2. Selecione "Link" e cole a URL do OpenAPI JSON: http://localhost:3001/api/docs-json
+3. Clique em "Import"
+4. Uma coleção completa com todos os endpoints será criada
+5. Configure um ambiente com a variável:
+   - `baseUrl`: http://localhost:3001/api
+   - `token`: [deixe vazio inicialmente]
+6. Faça uma requisição de login para obter o token
+7. Salve o token na variável de ambiente `token`
+8. Use o token nas requisições autenticadas no cabeçalho Authorization: `Bearer {{token}}`
